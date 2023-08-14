@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "387896594277",
+    "firebase_url": "https://diab-nabeel-test-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "diab-nabeel-test",
+    "storage_bucket": "diab-nabeel-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:387896594277:android:6d686ecadcda0502929b8c",
+        "android_client_info": {
+          "package_name": "gulzar.nabeel.diabetes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "387896594277-t3re64bfin1mnoubu7dj8ut3uerpjtdg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCni_FQicGURehRMu4Uq0Xz_9DQ050oHas"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "387896594277-t3re64bfin1mnoubu7dj8ut3uerpjtdg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "387896594277-g1ci86neumqmj3ks8m09t2tmu4o7dq1h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "gulzar.nabeel.diabetes"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
