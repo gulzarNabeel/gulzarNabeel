@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:country_calling_code_picker/picker.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_firebase_recaptcha/flutter_firebase_recaptcha.dart';
 
 
 class LoginVC extends StatefulWidget {
@@ -149,10 +148,11 @@ class FirebaseAuthentication {
     this.phoneNumber = phoneNumber;
     this.countryCodeIn = countryCode;
     FirebaseAuth auth = FirebaseAuth.instance;
-    // ConfirmationResult result = await auth.signInWithPhoneNumber(
-    //   '$countryCode' + '$phoneNumber',
-    // );
-    ConfirmationResult result = await auth.signInWithPhoneNumber("+97430336893");
+    ConfirmationResult result = await auth.signInWithPhoneNumber('+44 7123 123 456', RecaptchaVerifier(
+      container: 'recaptcha',
+      size: RecaptchaVerifierSize.compact,
+      theme: RecaptchaVerifierTheme.dark, auth: null,
+    ));
     printMessage("OTP Sent to $countryCodeIn$phoneNumber");
     return result;
   }
