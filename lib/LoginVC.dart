@@ -3,6 +3,8 @@ import 'package:country_calling_code_picker/picker.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'Utility.dart';
+
 
 class LoginVC extends StatefulWidget {
   const LoginVC({super.key, required this.title});
@@ -85,8 +87,8 @@ class _LoginPageState extends State<LoginVC> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
                   child: ElevatedButton(
                     onPressed: () {
-                      print("PrintIn");
-                      FirebaseAuthentication().sendOTP(_selectedCountry?.callingCode ?? "", textFieldPhone.textFieldPhone.decoration?.labelText ?? "");
+                      print(textFieldPhone.textFieldPhone.controller?.text ?? "");
+                      FirebaseAuthentication().sendOTP(context,_selectedCountry?.callingCode ?? "", textFieldPhone.textFieldPhone.controller?.text ?? "");
                     },
                     child: Text(
                       'Login',
@@ -109,7 +111,6 @@ class _PhoneNumberFormatter extends TextInputFormatter {
     // Format the phone number with spaces for better readability
     if (newValue.text.isNotEmpty) {
       final formattedText = newValue.text;
-      print(newValue.text + " " + oldValue.text + "  " + formattedText);
       return TextEditingValue(
         text: formattedText,
         selection: TextSelection.collapsed(offset: formattedText.length),
@@ -132,8 +133,22 @@ class PhoneNumberTextField extends StatelessWidget {
       hintText: 'Phone Number',
     ),
   );
+  TextEditingController editController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
+    textFieldPhone = TextField(
+      controller: editController,
+      keyboardType: TextInputType.phone,
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+        LengthLimitingTextInputFormatter(10), // Limit to 10 digits
+        _PhoneNumberFormatter(), // Custom formatter for phone numbers
+      ],
+      decoration: InputDecoration(
+        labelText: 'Phone Number',
+        hintText: 'Phone Number',
+      ),
+    );
     return Expanded(
         child: textFieldPhone,
     );
@@ -144,27 +159,25 @@ class FirebaseAuthentication {
   String phoneNumber = "";
   String countryCodeIn = "";
 
-  sendOTP(String countryCode,String phoneNumber) async {
+  sendOTP(BuildContext con, String countryCode,String phoneNumber) async {
     this.phoneNumber = phoneNumber;
     this.countryCodeIn = countryCode;
     FirebaseAuth auth = FirebaseAuth.instance;
-    ConfirmationResult result = await auth.signInWithPhoneNumber('+44 7123 123 456', RecaptchaVerifier(
-      container: 'recaptcha',
-      size: RecaptchaVerifierSize.compact,
-      theme: RecaptchaVerifierTheme.dark, auth: null,
-    ));
-    printMessage("OTP Sent to $countryCodeIn$phoneNumber");
-    return result;
+    auth.verifyPhoneNumber(phoneNumber: this.countryCodeIn+this.phoneNumber,verificationCompleted: (_){
+      print("Done\n\n\n\nverificationCompleted");
+    }, verificationFailed: (error){
+      print("Done\n\n\n$error");
+    }, codeSent: (String verificationId, int? token){
+      Utility.getInstance().showAlertDialog(con,verificationId,"OTP Verification", "Please enter your OTP received in your phone", "Verify", true, true);
+    }, codeAutoRetrievalTimeout: (_){
+      print("Done\n\n\n\ncodeAutoRetrievalTimeout");
+    });
+    // return result;
   }
 
-  authenticate(ConfirmationResult confirmationResult, String otp) async {
-    UserCredential userCredential = await confirmationResult.confirm(otp);
-    userCredential.additionalUserInfo!.isNewUser
-        ? printMessage("Authentication Successful")
-        : printMessage("User already exists");
-  }
 
-  printMessage(String msg) {
-    debugPrint(msg);
+
+  verifyMessage(String msg) {
+
   }
 }
