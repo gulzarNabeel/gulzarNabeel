@@ -249,7 +249,10 @@ class FirebaseAuthentication {
     users.doc(auth.currentUser?.uid).get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
-        print('Document exists on the database $data["name"]');
+        print(data["countryCode"] + " " + data["phoneNumber"]);
+        if (data["name"].toString().length > 0) {
+          
+        }
       }else{
         users.doc(auth.currentUser?.uid).set({
           'name' : "",
