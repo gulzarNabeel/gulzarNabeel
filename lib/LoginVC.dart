@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:country_calling_code_picker/picker.dart';
@@ -254,13 +254,15 @@ class FirebaseAuthentication {
           
         }
       }else{
+        DateTime now = auth.currentUser?.metadata?.creationTime ?? DateTime.now();
+        String formattedDate = DateFormat('yyyy-MM-dd – hh:mm:ss').format(now);
         users.doc(auth.currentUser?.uid).set({
           'name' : "",
           'email' : "",
           'countryCode' : countryCode,
           'phoneNumber' : phone,
           'profilePictureUrl' : "",
-          'creationDate' : auth.currentUser?.metadata?.creationTime
+          'creationDate' : formattedDate
         }).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
       }
     });
