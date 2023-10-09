@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:diabetes/Utility.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -249,7 +250,7 @@ class FirebaseAuthentication {
     users.doc(auth.currentUser?.uid).get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
-        print(data["countryCode"] + " " + data["phoneNumber"]);
+        Utility().saveUserData(data);
         if (data["name"].toString().length > 0) {
           
         }
@@ -263,7 +264,9 @@ class FirebaseAuthentication {
           'phoneNumber' : phone,
           'profilePictureUrl' : "",
           'creationDate' : formattedDate
-        }).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+        }).then((value) =>
+            print("User Added")
+        ).catchError((error) => print("Failed to add user: $error"));
       }
     });
 

@@ -49,6 +49,7 @@ dependencies:
   flutter_firebase_recaptcha: ^1.0.2
   firebase_crashlytics: ^3.3.4
   shared_preferences: ^2.2.1
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
