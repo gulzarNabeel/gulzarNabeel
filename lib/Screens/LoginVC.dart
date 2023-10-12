@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginVC> {
     return Scaffold(
       backgroundColor: Colors.white,
       // appBar: AppBar(
-      //   title: Text("Login Page"),
+      //   title: Text("Login"),
       // ),
       body: SingleChildScrollView(
         child: Column(

@@ -24,9 +24,7 @@ class _ProfilePageState extends State<ProfileVC> {
     var country = await getDefaultCountry(context);
     List<Country> countries = await getCountries(context);
     setState(() {
-      print(Utility().getUserData().countryCode);
       List<Country> filter = countries.where((element) {
-        print(element.callingCode);
         return element.callingCode == Utility().getUserData().countryCode;
       }).toList();
       if (filter.length > 0) {
@@ -38,7 +36,7 @@ class _ProfilePageState extends State<ProfileVC> {
       }else{
         _countryText = Text(Utility().getUserData().countryCode, style: TextStyle(color: Colors.blue, fontSize: 25));
       }
-
+      textFieldPhone.textFieldPhone.controller?.text  = Utility().getUserData().phoneNumber;
     });
   }
 
@@ -58,9 +56,9 @@ class _ProfilePageState extends State<ProfileVC> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   title: Text("Login Page"),
-      // ),
+      appBar: AppBar(
+        title: Text("Profile"),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
