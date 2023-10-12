@@ -1,5 +1,6 @@
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'User.dart';
+import '../Models/User.dart';
 
 
 class Utility {
@@ -52,18 +53,18 @@ class Utility {
     }else{
       arrayString.add('');
     }
-    this.prefs?.setStringList("userData", arrayString);
+    this.prefs?.setStringList("userData", arrayString).whenComplete(() => print('Saved Data'));
   }
 
   User getUserData() {
-    List<String>? data = prefs?.get('userData') as List<String>?;
+    List<String>? data = this.prefs?.getStringList('userData') as List<String>?;
     Map<String,dynamic> document = {
       'name': data?[0] ?? '',
       'email': data?[1] ?? '',
       'countryCode': data?[2] ?? '',
       'phoneNumber': data?[3] ?? '',
       'profilePictureUrl': data?[4] ?? '',
-      'creationDate': data?[5] ?? '',
+      'creationDate': data?[5] ?? DateFormat('yyyy-MM-dd – hh:mm:ss').format(DateTime.now()) ?? '',
     };
     return User.fromDocument(document);
   }

@@ -1,5 +1,3 @@
-import 'dart:js';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
@@ -25,7 +23,7 @@ class User {
         document['countryCode'],
         document['phoneNumber'],
         document['profilePictureUrl'],
-        new DateFormat("yyyy-MM-dd hh:mm:ss").parse(document['creationDate'])
+        document['creationDate'].length > 0 ? new DateFormat('yyyy-MM-dd – hh:mm:ss').parse(document['creationDate']) : DateTime.now()
     );
   }
 }

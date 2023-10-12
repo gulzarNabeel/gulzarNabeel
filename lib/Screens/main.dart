@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'package:diabetes/Screens/ProfileVC.dart';
+import 'package:diabetes/Usables/Utility.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:diabetes/LoginVC.dart';
+import '../firebase_options.dart';
+import 'package:diabetes/Screens/LoginVC.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -38,13 +41,28 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Timer.periodic(const Duration(seconds: 5), (timer) {
+    Utility();
+    Timer.periodic(const Duration(seconds: 3), (timer) {
       timer.cancel();
-      print("Timer complted");
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => LoginVC(title: 'Flutter Login Page'), fullscreenDialog: true),
-      );
+      if (FirebaseAuth.instance.currentUser != null) {
+        if (Utility().getUserData().name.length > 0) {
+
+        }else{
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProfileVC(title: 'Flutter Profile Page'),
+                fullscreenDialog: true),
+          );
+        }
+      }else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => LoginVC(title: 'Flutter Login Page'),
+              fullscreenDialog: true),
+        );
+      }
     });
   }
 

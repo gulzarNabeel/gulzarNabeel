@@ -1,11 +1,13 @@
 import 'dart:async';
-import 'package:diabetes/Utility.dart';
+import 'package:diabetes/Screens/ProfileVC.dart';
+import 'package:diabetes/Usables/Utility.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:country_calling_code_picker/picker.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../Usables/PhoneNumberTextField.dart';
 
 class LoginVC extends StatefulWidget {
   const LoginVC({super.key, required this.title});
@@ -104,58 +106,6 @@ class _LoginPageState extends State<LoginVC> {
   }
 }
 
-
-class _PhoneNumberFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    // Format the phone number with spaces for better readability
-    if (newValue.text.isNotEmpty) {
-      final formattedText = newValue.text;
-      return TextEditingValue(
-        text: formattedText,
-        selection: TextSelection.collapsed(offset: formattedText.length),
-      );
-    }
-    return newValue;
-  }
-}
-
-class PhoneNumberTextField extends StatelessWidget {
-  TextField textFieldPhone = TextField(
-    keyboardType: TextInputType.phone,
-    inputFormatters: [
-      FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-      LengthLimitingTextInputFormatter(10), // Limit to 10 digits
-      _PhoneNumberFormatter(), // Custom formatter for phone numbers
-    ],
-    decoration: InputDecoration(
-      labelText: 'Phone Number',
-      hintText: 'Phone Number',
-    ),
-  );
-  TextEditingController editController = new TextEditingController();
-  @override
-  Widget build(BuildContext context) {
-    textFieldPhone = TextField(
-      controller: editController,
-      keyboardType: TextInputType.phone,
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-        LengthLimitingTextInputFormatter(10), // Limit to 10 digits
-        _PhoneNumberFormatter(), // Custom formatter for phone numbers
-      ],
-      decoration: InputDecoration(
-        labelText: 'Phone Number',
-        hintText: 'Phone Number',
-      ),
-    );
-    return Expanded(
-        child: textFieldPhone,
-    );
-  }
-}
-
 class FirebaseAuthentication {
   String phoneNumber = "";
   String countryCodeIn = "";
@@ -210,7 +160,7 @@ class FirebaseAuthentication {
             smsCode: textFieldin.controller?.text ?? "");
         try {
           await auth.signInWithCredential(credentials).then((authResult) {
-            getFirestoreData(countryCode,phone);
+            getFirestoreData(cont,countryCode,phone);
             Navigator.pop(cont, textFieldin.controller?.text ?? "");
           });
         } catch (error) {
@@ -244,7 +194,7 @@ class FirebaseAuthentication {
     );
   }
 
-  getFirestoreData(String countryCode, String phone){
+  getFirestoreData(BuildContext context, String countryCode, String phone){
     CollectionReference users = FirebaseFirestore.instance.collection('Users');
     FirebaseAuth auth = FirebaseAuth.instance;
     users.doc(auth.currentUser?.uid).get().then((DocumentSnapshot documentSnapshot) {
@@ -253,6 +203,13 @@ class FirebaseAuthentication {
         Utility().saveUserData(data);
         if (data["name"].toString().length > 0) {
           
+        }else{
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProfileVC(title: 'Flutter Profile Page'),
+                fullscreenDialog: true),
+          );
         }
       }else{
         DateTime now = auth.currentUser?.metadata?.creationTime ?? DateTime.now();
@@ -264,47 +221,25 @@ class FirebaseAuthentication {
           'phoneNumber' : phone,
           'profilePictureUrl' : "",
           'creationDate' : formattedDate
-        }).then((value) =>
-            print("User Added")
-        ).catchError((error) => print("Failed to add user: $error"));
+        }).then((_) {
+          print("User Added Successfully");
+          Map<String,dynamic> document = {
+            'name' : "",
+            'email' : "",
+            'countryCode' : countryCode,
+            'phoneNumber' : phone,
+            'profilePictureUrl' : "",
+            'creationDate' : formattedDate
+          };
+          Utility().saveUserData(document);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProfileVC(title: 'Flutter Profile Page'),
+                fullscreenDialog: true),
+          );
+        }).catchError((error) => print("Failed to add user: $error"));
       }
     });
-
-
-
-    if (users.doc(auth.currentUser?.uid).get() == null) {
-      print("item not found");
-
-    }else{
-      print(users.id);
-    }
-
-
-    return FutureBuilder<DocumentSnapshot>(
-        future: users.doc(auth.currentUser?.uid).get(),
-        builder:
-          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return Text("Something went wrong");
-            }
-            if (snapshot.hasData && !snapshot.data!.exists) {
-              users.add({
-                'name' : "",
-                'email' : "",
-                'countryCode' : "",
-                'phoneNumber' : "",
-                'profilePictureUrl' : "",
-                'creationDate' : auth.currentUser?.metadata?.creationTime
-              }).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
-            }
-
-            if (snapshot.connectionState == ConnectionState.done) {
-              Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-              return Text("name: ${data['name']}");
-            }
-
-            return Text("loading");
-        },
-    );
   }
 }
