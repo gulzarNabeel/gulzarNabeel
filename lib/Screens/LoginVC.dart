@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:country_calling_code_picker/picker.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../Usables/PhoneNumberTextField.dart';
+import '../Usables/CustomTextField.dart';
 
 class LoginVC extends StatefulWidget {
   const LoginVC({super.key, required this.title});
@@ -19,7 +19,7 @@ class LoginVC extends StatefulWidget {
 class _LoginPageState extends State<LoginVC> {
   Country? _selectedCountry;
   Text? _countryText = Text("", style: TextStyle(color: Colors.blue, fontSize: 25));
-  PhoneNumberTextField textFieldPhone = PhoneNumberTextField();
+  CustomTextField textFieldPhone = CustomTextField('Phone Number', TextInputType.phone);
   @override
   void initState() {
     initCountry();
@@ -90,8 +90,7 @@ class _LoginPageState extends State<LoginVC> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
                   child: ElevatedButton(
                     onPressed: () {
-                      print(textFieldPhone.textFieldPhone.controller?.text ?? "");
-                      FirebaseAuthentication().sendOTP(context,_selectedCountry?.callingCode ?? "", textFieldPhone.textFieldPhone.controller?.text ?? "");
+                      FirebaseAuthentication().sendOTP(context,_selectedCountry?.callingCode ?? "", textFieldPhone.textFieldIn.controller?.text ?? "");
                     },
                     child: Text(
                       'Login',

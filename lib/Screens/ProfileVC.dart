@@ -1,7 +1,7 @@
 import 'package:country_calling_code_picker/picker.dart';
 import 'package:flutter/material.dart';
 
-import '../Usables/PhoneNumberTextField.dart';
+import '../Usables/CustomTextField.dart';
 import '../Usables/Utility.dart';
 
 class ProfileVC extends StatefulWidget {
@@ -14,7 +14,9 @@ class ProfileVC extends StatefulWidget {
 class _ProfilePageState extends State<ProfileVC> {
   Country? _selectedCountry;
   Text? _countryText = Text("", style: TextStyle(color: Colors.blue, fontSize: 25));
-  PhoneNumberTextField textFieldPhone = PhoneNumberTextField();
+  CustomTextField textFieldPhone = CustomTextField('Phone Number', TextInputType.phone);
+  CustomTextField textFieldName = CustomTextField('Name', TextInputType.name);
+  CustomTextField textFieldEmail = CustomTextField('Email', TextInputType.emailAddress);
   @override
   void initState() {
     initCountry();
@@ -36,7 +38,9 @@ class _ProfilePageState extends State<ProfileVC> {
       }else{
         _countryText = Text(Utility().getUserData().countryCode, style: TextStyle(color: Colors.blue, fontSize: 25));
       }
-      textFieldPhone.textFieldPhone.controller?.text  = Utility().getUserData().phoneNumber;
+      textFieldPhone.textFieldIn.controller?.text  = Utility().getUserData().phoneNumber;
+      textFieldName.textFieldIn.controller?.text  = Utility().getUserData().name;
+      // textFieldPhone.textFieldIn.enableInteractiveSelection = false;
     });
   }
 
@@ -63,7 +67,7 @@ class _ProfilePageState extends State<ProfileVC> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(top: 60.0),
+              padding: const EdgeInsets.only(top: 30.0),
               child: Center(
                 child: Container(
                     width: 200,
@@ -71,8 +75,14 @@ class _ProfilePageState extends State<ProfileVC> {
                     child: Image.asset('Assets/appicon.png')),
               ),
             ),
+            //Name Text Portion
             Padding(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 20),
+              child: textFieldName
+            ),
+            //Phone Number portion
+            Padding(
+              padding: EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 20),
               child: Row(
                   children: <Widget>[
                     TextButton(
@@ -89,6 +99,10 @@ class _ProfilePageState extends State<ProfileVC> {
                   ]
               ),
             ),
+            Padding(
+                padding: EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 20),
+                child: textFieldEmail
+            ),
 
             Container(
               height: 50,
@@ -97,7 +111,7 @@ class _ProfilePageState extends State<ProfileVC> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton(
                 onPressed: () {
-                  print(textFieldPhone.textFieldPhone.controller?.text ?? "");
+                  // print(textFieldPhone.textFieldPhone.controller?.text ?? "");
                   // FirebaseAuthentication().sendOTP(context,_selectedCountry?.callingCode ?? "", textFieldPhone.textFieldPhone.controller?.text ?? "");
                 },
                 child: Text(

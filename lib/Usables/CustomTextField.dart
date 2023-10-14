@@ -19,37 +19,29 @@ class _PhoneNumberFormatter extends TextInputFormatter {
   }
 }
 
-class PhoneNumberTextField extends StatelessWidget {
-  TextField textFieldPhone = TextField(
-    keyboardType: TextInputType.phone,
-    inputFormatters: [
-      FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-      LengthLimitingTextInputFormatter(10), // Limit to 10 digits
-      _PhoneNumberFormatter(), // Custom formatter for phone numbers
-    ],
-    decoration: InputDecoration(
-      labelText: 'Phone Number',
-      hintText: 'Phone Number',
-    ),
-  );
+class CustomTextField extends StatelessWidget {
+  CustomTextField(this.titleText, this.textType);
+  final String? titleText;
+  final TextInputType? textType;
+  TextField textFieldIn = TextField();
   TextEditingController editController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
-    textFieldPhone = TextField(
+    textFieldIn = TextField(
       controller: editController,
-      keyboardType: TextInputType.phone,
-      inputFormatters: [
+      textCapitalization: textType == TextInputType.name ? TextCapitalization.words : TextCapitalization.none,
+      keyboardType: textType,
+      inputFormatters: (textType == TextInputType.phone) ? [
         FilteringTextInputFormatter.allow(RegExp("[0-9]")),
         LengthLimitingTextInputFormatter(10), // Limit to 10 digits
         _PhoneNumberFormatter(), // Custom formatter for phone numbers
-      ],
+      ] : [],
       decoration: InputDecoration(
-        labelText: 'Phone Number',
-        hintText: 'Phone Number',
+        labelText: titleText
       ),
     );
     return Expanded(
-      child: textFieldPhone,
+      child: textFieldIn,
     );
   }
 }
