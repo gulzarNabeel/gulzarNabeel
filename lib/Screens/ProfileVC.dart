@@ -14,9 +14,9 @@ class ProfileVC extends StatefulWidget {
 class _ProfilePageState extends State<ProfileVC> {
   Country? _selectedCountry;
   Text? _countryText = Text("", style: TextStyle(color: Colors.blue, fontSize: 25));
-  CustomTextField textFieldPhone = CustomTextField('Phone Number', TextInputType.phone);
-  CustomTextField textFieldName = CustomTextField('Name', TextInputType.name);
-  CustomTextField textFieldEmail = CustomTextField('Email', TextInputType.emailAddress);
+  CustomTextField textFieldPhone = CustomTextField('Phone Number', TextInputType.phone, false);
+  CustomTextField textFieldName = CustomTextField('Name', TextInputType.name, true);
+  CustomTextField textFieldEmail = CustomTextField('Email', TextInputType.emailAddress, true);
   @override
   void initState() {
     initCountry();

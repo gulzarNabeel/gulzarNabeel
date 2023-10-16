@@ -19,7 +19,7 @@ class LoginVC extends StatefulWidget {
 class _LoginPageState extends State<LoginVC> {
   Country? _selectedCountry;
   Text? _countryText = Text("", style: TextStyle(color: Colors.blue, fontSize: 25));
-  CustomTextField textFieldPhone = CustomTextField('Phone Number', TextInputType.phone);
+  CustomTextField textFieldPhone = CustomTextField('Phone Number', TextInputType.phone, true);
   @override
   void initState() {
     initCountry();
