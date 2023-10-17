@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diabetes/Screens/ProfileVC.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -42,19 +43,35 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement initState
     super.initState();
     Utility();
-    Timer.periodic(const Duration(seconds: 3), (timer) {
+    Timer.periodic(const Duration(seconds: 3), (timer) async {
       timer.cancel();
-      if (FirebaseAuth.instance.currentUser != null) {
-        if (Utility().getUserData().name.length > 0) {
+      FirebaseAuth auth = FirebaseAuth.instance;
+      if (auth.currentUser != null) {
+        CollectionReference users = FirebaseFirestore.instance.collection('Users');
+        users.doc(auth.currentUser?.uid).get().then((DocumentSnapshot documentSnapshot) {
+          if (documentSnapshot.exists) {
+            Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+            Utility().saveUserData(data);
+            if (data["name"].toString().length > 0) {
 
-        }else{
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ProfileVC(title: 'Flutter Profile Page'),
-                fullscreenDialog: true),
-          );
-        }
+            }else{
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProfileVC(title: 'Flutter Profile Page'),
+                    fullscreenDialog: true),
+              );
+            }
+          }else{
+            auth.signOut();
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LoginVC(title: 'Flutter Login Page'),
+                  fullscreenDialog: true),
+            );
+          }
+        });
       }else {
         Navigator.push(
           context,

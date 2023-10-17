@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_calling_code_picker/picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../Usables/CustomTextField.dart';
 import '../Usables/Utility.dart';
@@ -78,7 +81,11 @@ class _ProfilePageState extends State<ProfileVC> {
             //Name Text Portion
             Padding(
               padding: EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 20),
-              child: textFieldName
+              child: Row(
+                  children: <Widget>[
+                    textFieldName,
+                  ]
+              ),
             ),
             //Phone Number portion
             Padding(
@@ -101,7 +108,11 @@ class _ProfilePageState extends State<ProfileVC> {
             ),
             Padding(
                 padding: EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 20),
-                child: textFieldEmail
+              child: Row(
+                  children: <Widget>[
+                    textFieldEmail,
+                  ]
+              ),
             ),
 
             Container(
@@ -111,11 +122,10 @@ class _ProfilePageState extends State<ProfileVC> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton(
                 onPressed: () {
-                  // print(textFieldPhone.textFieldPhone.controller?.text ?? "");
-                  // FirebaseAuthentication().sendOTP(context,_selectedCountry?.callingCode ?? "", textFieldPhone.textFieldPhone.controller?.text ?? "");
+                  updateProfile();
                 },
                 child: Text(
-                  'Login',
+                  'Update',
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ),
@@ -124,5 +134,38 @@ class _ProfilePageState extends State<ProfileVC> {
         ),
       ),
     );
+  }
+
+  updateProfile() {
+    if ((textFieldName.textFieldIn.controller?.text ?? '').length <= 0 ||(textFieldEmail.textFieldIn.controller?.text ?? '').length <= 0) {
+      return;
+    }
+
+
+    CollectionReference users = FirebaseFirestore.instance.collection('Users');
+    FirebaseAuth auth = FirebaseAuth.instance;
+    DateTime now = auth.currentUser?.metadata?.creationTime ?? DateTime.now();
+    String formattedDate = DateFormat('yyyy-MM-dd – hh:mm:ss').format(now);
+    users.doc(auth.currentUser?.uid).set({
+      'name': textFieldName.textFieldIn.controller?.text ?? '',
+      'email': textFieldEmail.textFieldIn.controller?.text ?? '',
+      'countryCode': _selectedCountry?.callingCode ?? '',
+      'phoneNumber': textFieldPhone.textFieldIn.controller?.text ?? '',
+      'profilePictureUrl': "",
+      'creationDate': formattedDate
+    }).then((_) {
+      print("User Added Successfully");
+      Map<String, dynamic> document = {
+        'name': textFieldName.textFieldIn.controller?.text ?? '',
+        'email': textFieldEmail.textFieldIn.controller?.text ?? '',
+        'countryCode': _selectedCountry?.callingCode ?? '',
+        'phoneNumber': textFieldPhone.textFieldIn.controller?.text ?? '',
+        'profilePictureUrl': "",
+        'creationDate': formattedDate
+      };
+      Utility().saveUserData(document);
+      auth.currentUser?.updateEmail(textFieldEmail.textFieldIn.controller?.text ?? '');
+      auth.currentUser?.updateDisplayName(textFieldName.textFieldIn.controller?.text ?? '');
+    });
   }
 }
