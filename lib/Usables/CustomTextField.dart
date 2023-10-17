@@ -21,7 +21,7 @@ class _PhoneNumberFormatter extends TextInputFormatter {
   }
 }
 
-class CustomTextField extends StatefulWidget {
+class CustomTextField extends StatelessWidget {
   CustomTextField(this.titleText, this.textType, this.TFediitable);
   final String? titleText;
   bool TFediitable = true;

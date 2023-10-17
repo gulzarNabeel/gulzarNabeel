@@ -40,7 +40,7 @@ class _ProfilePageState extends State<ProfileVC> {
       }
       textFieldPhone.textFieldIn.controller?.text  = Utility().getUserData().phoneNumber;
       textFieldName.textFieldIn.controller?.text  = Utility().getUserData().name;
-      // textFieldPhone.textFieldIn.enableInteractiveSelection = false;
+      textFieldEmail.textFieldIn.controller?.text  = Utility().getUserData().email;
     });
   }
 
