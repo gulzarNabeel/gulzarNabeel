@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:diabetes/Screens/ProfileVC.dart';
+import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -130,67 +131,23 @@ class FirebaseAuthentication {
 
   showAlertDialog(BuildContext cont,String countryCode, String phone,String idVerification) async {
     // set up the buttons
-    TextEditingController _editController = new TextEditingController();
-    Widget cancelButton = ElevatedButton(
-      child: Text("Cancel", style: TextStyle(color: Colors.red, fontSize: 25)),
-      onPressed: () {
-        Navigator.pop(cont);
-      },
-    );
+    AlertDialogLocal('OTP Verification', 'Please enter your OTP received in your phone', 'Login', 'Cancel', (String value) async {
+      print(value + '\n\n\n');
+      FirebaseAuth auth = FirebaseAuth.instance;
+      final credentials = PhoneAuthProvider.credential(
+          verificationId: idVerification,
+          smsCode: value);
+      try {
+        await auth.signInWithCredential(credentials).then((authResult) {
+          getFirestoreData(cont,countryCode,phone);
+        });
+      } catch (error) {
+        print(error);
+        AlertDialogLocal('Failed', error.toString(), 'OK', '',(){},(){}, false, '', false);
+      }
+    }, (value){
 
-    TextField textFieldin = TextField(
-      controller: _editController,
-      maxLines: 1,
-      autofocus: true,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        hintText: 'Enter your code',
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-      ),
-    );
-    Widget continueButton = ElevatedButton(
-      child: Text("Login", style: TextStyle(color: Colors.green, fontSize: 25)),
-      onPressed: () async {
-        FirebaseAuth auth = FirebaseAuth.instance;
-        final credentials = PhoneAuthProvider.credential(
-            verificationId: idVerification,
-            smsCode: textFieldin.controller?.text ?? "");
-        try {
-          await auth.signInWithCredential(credentials).then((authResult) {
-            getFirestoreData(cont,countryCode,phone);
-            Navigator.pop(cont, textFieldin.controller?.text ?? "");
-          });
-        } catch (error) {
-          print(error);
-          Navigator.pop(cont);
-        }
-      },
-    );
-    Widget title = Text("Please enter your OTP received in your phone");
-
-    List<Widget> actions = [cancelButton, continueButton];
-
-    List<Widget> elements = [title, textFieldin];
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("OTP Verification"),
-      content: SingleChildScrollView(
-        child: ListBody(
-          children: elements,
-        ),
-      ),
-      actions: actions,
-    );
-
-    // show the dialog
-    final result = await showDialog(
-      context: cont,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+    }, true, 'OTP', true).showAlert(cont);
   }
 
   getFirestoreData(BuildContext context, String countryCode, String phone){
