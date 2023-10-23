@@ -22,15 +22,25 @@ class AlertDialogLocal extends StatelessWidget {
     CustomTextField textFieldIn = CustomTextField('OTP', TextInputType.number, true);
     Widget noButton = ElevatedButton(
       child: Text(no, style: TextStyle(color: Colors.red, fontSize: 25)),
+      style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
       onPressed: () {
-        noOnPressed(textFieldIn.textFieldIn.controller?.text ?? '');
+        if (textNeeded == true) {
+          noOnPressed(textFieldIn.textFieldIn.controller?.text ?? '');
+        }else{
+          noOnPressed;
+        }
         Navigator.pop(context);
       },
     );
     Widget yesButton = ElevatedButton(
       child: Text(yes, style: TextStyle(color: Colors.green, fontSize: 25)),
+      style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
       onPressed: () {
-        yesOnPressed(textFieldIn.textFieldIn.controller?.text ?? '');
+        if (textNeeded == true) {
+          yesOnPressed(textFieldIn.textFieldIn.controller?.text ?? '');
+        }else{
+          yesOnPressed;
+        }
         Navigator.pop(context);
       },
     );

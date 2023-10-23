@@ -53,19 +53,12 @@ class Utility {
     }else{
       arrayString.add('');
     }
+    print('Saved DataFrom DB' + document.toString());
     this.prefs?.setStringList("userData", arrayString).whenComplete(() => print('Saved Data'));
   }
 
   User getUserData() {
     List<String>? data = this.prefs?.getStringList('userData') as List<String>?;
-    Map<String,dynamic> document = {
-      'name': data?[0] ?? '',
-      'email': data?[1] ?? '',
-      'countryCode': data?[2] ?? '',
-      'phoneNumber': data?[3] ?? '',
-      'profilePictureUrl': data?[4] ?? '',
-      'creationDate': data?[5] ?? DateFormat('yyyy-MM-dd – hh:mm:ss').format(DateTime.now()) ?? '',
-    };
-    return User.fromDocument(document);
+    return User(data?[0] ?? '', data?[1] ?? '', data?[2] ?? '', data?[3] ?? '', data?[4] ?? '', (data?[5] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd – hh:mm:ss').parse(data?[5] ?? '') : DateTime.now());
   }
 }

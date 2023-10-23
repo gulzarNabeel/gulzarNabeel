@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:diabetes/Models/User.dart';
 import 'package:diabetes/Screens/ProfileVC.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:diabetes/Usables/Utility.dart';
@@ -143,7 +144,7 @@ class FirebaseAuthentication {
         });
       } catch (error) {
         print(error);
-        AlertDialogLocal('Failed', error.toString(), 'OK', '',(){},(){}, false, '', false);
+        AlertDialogLocal('Failed', error.toString(), 'OK', '',(){},(){}, false, '', false).showAlert(cont);
       }
     }, (value){
 
@@ -168,33 +169,21 @@ class FirebaseAuthentication {
           );
         }
       }else{
-        DateTime now = auth.currentUser?.metadata?.creationTime ?? DateTime.now();
-        String formattedDate = DateFormat('yyyy-MM-dd – hh:mm:ss').format(now);
-        users.doc(auth.currentUser?.uid).set({
-          'name' : "",
-          'email' : "",
-          'countryCode' : countryCode,
-          'phoneNumber' : phone,
-          'profilePictureUrl' : "",
-          'creationDate' : formattedDate
-        }).then((_) {
-          print("User Added Successfully");
-          Map<String,dynamic> document = {
-            'name' : "",
-            'email' : "",
-            'countryCode' : countryCode,
-            'phoneNumber' : phone,
-            'profilePictureUrl' : "",
-            'creationDate' : formattedDate
-          };
-          Utility().saveUserData(document);
+        var userCurrent = Utility().getUserData();
+        userCurrent.countryCode = countryCode;
+        userCurrent.phoneNumber = phone;
+        userCurrent.name = '';
+        userCurrent.profilePictureUrl = '';
+        userCurrent.email = '';
+        userCurrent.creationDate = auth.currentUser?.metadata?.creationTime ?? DateTime.now();
+        userCurrent.updateData().then((_) {
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => ProfileVC(title: 'Flutter Profile Page'),
                 fullscreenDialog: true),
           );
-        }).catchError((error) => print("Failed to add user: $error"));
+        });
       }
     });
   }
