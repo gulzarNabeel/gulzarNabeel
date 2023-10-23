@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../Usables/AuthExceptionHandler.dart';
 import '../Usables/CustomTextField.dart';
 import '../Usables/Utility.dart';
 
@@ -160,7 +161,7 @@ class _ProfilePageState extends State<ProfileVC> {
           'Alert',
           'Please enter your name',
           'OK',
-          '', () {print("OK");}, () {print("OK");},
+          '', () {}, () {},
           false,
           '',
           false).showAlert(context);
@@ -184,7 +185,6 @@ class _ProfilePageState extends State<ProfileVC> {
       if ((textFieldEmail.textFieldIn.controller?.text ?? '') != Utility().getUserData().email) {
         list = await FirebaseAuth.instance.fetchSignInMethodsForEmail(textFieldEmail.textFieldIn.controller?.text ?? '');
       }
-      print('total login type list' + list.toString());
       if (list.isNotEmpty) {
         AlertDialogLocal('Alert', 'The email address is already in use by another account', 'OK', '', () {}, () {}, false, '', false).showAlert(context);
       } else {
@@ -201,7 +201,7 @@ class _ProfilePageState extends State<ProfileVC> {
         });
       }
     } catch (error) {
-      AlertDialogLocal('Alert', error.toString(), 'OK', '', () {}, () {}, false, '', false).showAlert(context);
+      AlertDialogLocal('Alert', AuthExceptionHandler.generateExceptionMessage(AuthExceptionHandler.handleException(error)), 'OK', '', () {}, () {}, false, '', false).showAlert(context);
     }
   }
 
@@ -222,6 +222,9 @@ class _ProfilePageState extends State<ProfileVC> {
                 auth.currentUser?.updateEmail(textFieldEmail.textFieldIn.controller?.text ?? '').then((value){
                   currentUser.email = (textFieldEmail.textFieldIn.controller?.text ?? '');
                   currentUser.updateData();
+                }).catchError((error){
+                  textFieldEmail.textFieldIn.controller?.text = '';
+                  AlertDialogLocal("Failure", AuthExceptionHandler.generateExceptionMessage(AuthExceptionHandler.handleException(error)), 'OK', '', (){}, (){}, false, '', false).showAlert(cont);
                 });
               }
             });
@@ -231,11 +234,13 @@ class _ProfilePageState extends State<ProfileVC> {
                 value) {
               currentUser.email = (textFieldEmail.textFieldIn.controller?.text ?? '');
               currentUser.updateData();
+            }).catchError((error){
+              textFieldEmail.textFieldIn.controller?.text = '';
+              AlertDialogLocal("Failure", AuthExceptionHandler.generateExceptionMessage(AuthExceptionHandler.handleException(error)), 'OK', '', (){}, (){}, false, '', false).showAlert(cont);
             });
           }
         });
       } catch (error) {
-        print(error);
         AlertDialogLocal('Failed', error.toString(), 'OK', '',(){},(){}, false, '', false).showAlert(cont);
       }
     }, (value){

@@ -53,8 +53,7 @@ class Utility {
     }else{
       arrayString.add('');
     }
-    print('Saved DataFrom DB' + document.toString());
-    this.prefs?.setStringList("userData", arrayString).whenComplete(() => print('Saved Data'));
+    this.prefs?.setStringList("userData", arrayString).whenComplete((){});
   }
 
   User getUserData() {

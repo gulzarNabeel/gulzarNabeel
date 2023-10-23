@@ -33,7 +33,6 @@ class User {
       'profilePictureUrl': profilePictureUrl,
       'creationDate': formattedDate
     }).then((_) {
-      print("User Updated Successfully");
       Map<String, dynamic> document = {
         'name': name,
         'email': email,

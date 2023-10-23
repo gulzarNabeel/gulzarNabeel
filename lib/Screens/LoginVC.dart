@@ -133,7 +133,6 @@ class FirebaseAuthentication {
   showAlertDialog(BuildContext cont,String countryCode, String phone,String idVerification) async {
     // set up the buttons
     AlertDialogLocal('OTP Verification', 'Please enter your OTP received in your phone', 'Login', 'Cancel', (String value) async {
-      print(value + '\n\n\n');
       FirebaseAuth auth = FirebaseAuth.instance;
       final credentials = PhoneAuthProvider.credential(
           verificationId: idVerification,
@@ -143,7 +142,6 @@ class FirebaseAuthentication {
           getFirestoreData(cont,countryCode,phone);
         });
       } catch (error) {
-        print(error);
         AlertDialogLocal('Failed', error.toString(), 'OK', '',(){},(){}, false, '', false).showAlert(cont);
       }
     }, (value){
