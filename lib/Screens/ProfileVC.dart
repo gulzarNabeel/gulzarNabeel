@@ -11,10 +11,12 @@ import '../Usables/CustomTextField.dart';
 import '../Usables/Utility.dart';
 
 class ProfileVC extends StatefulWidget {
-  const ProfileVC({super.key, required this.title});
+  final VoidCallback onClose;
+
+  const ProfileVC({super.key, required this.title, required this.onClose});
   final String title;
   @override
-  State<ProfileVC> createState() => _ProfilePageState();
+  State<ProfileVC> createState() => _ProfilePageState(onClose);
 }
 
 class _ProfilePageState extends State<ProfileVC> {
@@ -23,6 +25,8 @@ class _ProfilePageState extends State<ProfileVC> {
   CustomTextField textFieldPhone = CustomTextField('Phone Number', TextInputType.phone, false);
   CustomTextField textFieldName = CustomTextField('Name', TextInputType.name, true);
   CustomTextField textFieldEmail = CustomTextField('Email', TextInputType.emailAddress, true);
+  final VoidCallback onClose;
+  _ProfilePageState(this.onClose);
   @override
   void initState() {
     initCountry();
@@ -53,16 +57,7 @@ class _ProfilePageState extends State<ProfileVC> {
   }
 
   void _onPressedShowBottomSheet() async {
-    return;
-    final country = await showCountryPickerSheet(
-      context,
-    );
-    if (country != null) {
-      setState(() {
-        _selectedCountry = country;
-        _countryText = Text(_selectedCountry?.callingCode ?? "", style: TextStyle(color: Colors.blue, fontSize: 25));
-      });
-    }
+
   }
 
   @override
@@ -77,7 +72,8 @@ class _ProfilePageState extends State<ProfileVC> {
             tooltip: 'Logout',
             onPressed: () async {
               await FirebaseAuth.instance.signOut().then((value) {
-
+                  onClose();
+                  Navigator.pop(context);
               });
             },
           ),],
@@ -241,7 +237,7 @@ class _ProfilePageState extends State<ProfileVC> {
           }
         });
       } catch (error) {
-        AlertDialogLocal('Failed', error.toString(), 'OK', '',(){},(){}, false, '', false).showAlert(cont);
+        AlertDialogLocal('Failed', AuthExceptionHandler.generateExceptionMessage(AuthExceptionHandler.handleException(error)), 'OK', '',(){},(){}, false, '', false).showAlert(cont);
       }
     }, (value){
 

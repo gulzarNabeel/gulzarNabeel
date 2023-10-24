@@ -45,8 +45,13 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement initState
     super.initState();
     Utility();
+  timerEvent();
+  }
+
+  timerEvent() {
     Timer.periodic(const Duration(seconds: 3), (timer) async {
       timer.cancel();
+      print('timer finished');
       FirebaseAuth auth = FirebaseAuth.instance;
       if (auth.currentUser != null) {
         CollectionReference users = FirebaseFirestore.instance.collection('Users');
@@ -57,12 +62,14 @@ class _MyHomePageState extends State<MyHomePage> {
             // if (data["name"].toString().length > 0) {
             //
             // }else{
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ProfileVC(title: 'Flutter Profile Page'),
-                    fullscreenDialog: true),
-              );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProfileVC(title: 'Flutter Profile Page', onClose: () {
+                    timerEvent();
+                  }),
+                  fullscreenDialog: true),
+            );
             // }
           }else{
             auth.signOut();

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:country_calling_code_picker/picker.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../Usables/AuthExceptionHandler.dart';
 import '../Usables/CustomTextField.dart';
 
 class LoginVC extends StatefulWidget {
@@ -92,7 +93,7 @@ class _LoginPageState extends State<LoginVC> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
                   child: ElevatedButton(
                     onPressed: () {
-                      FirebaseAuthentication().sendOTP(context,_selectedCountry?.callingCode ?? "", textFieldPhone.textFieldIn.controller?.text ?? "");
+                      sendOTP(context,_selectedCountry?.callingCode ?? "", textFieldPhone.textFieldIn.controller?.text ?? "");
                     },
                     child: Text(
                       'Login',
@@ -105,22 +106,15 @@ class _LoginPageState extends State<LoginVC> {
       ),
     );
   }
-}
 
-class FirebaseAuthentication {
-  String phoneNumber = "";
-  String countryCodeIn = "";
-
-  sendOTP(BuildContext con, String countryCode,String phoneNumber) async {
-    this.phoneNumber = phoneNumber;
-    this.countryCodeIn = countryCode;
+  sendOTP(BuildContext con, String countryCodeIn,String phoneNumber) async {
     FirebaseAuth auth = FirebaseAuth.instance;
-    auth.verifyPhoneNumber(phoneNumber: this.countryCodeIn+this.phoneNumber,verificationCompleted: (_){
+    auth.verifyPhoneNumber(phoneNumber: countryCodeIn+phoneNumber,verificationCompleted: (_){
       print("Done\n\n\n\nverificationCompleted");
     }, verificationFailed: (error){
       print("Done\n\n\n$error");
     }, codeSent: (String verificationId, int? token) async {
-      final result = await showAlertDialog(con, countryCode,phoneNumber, verificationId);
+      final result = await showAlertDialog(con, countryCodeIn,phoneNumber, verificationId);
       setState() {
         print(result);
       }
@@ -142,7 +136,7 @@ class FirebaseAuthentication {
           getFirestoreData(cont,countryCode,phone);
         });
       } catch (error) {
-        AlertDialogLocal('Failed', error.toString(), 'OK', '',(){},(){}, false, '', false).showAlert(cont);
+        AlertDialogLocal('Failed', AuthExceptionHandler.generateExceptionMessage(AuthExceptionHandler.handleException(error)), 'OK', '',(){},(){}, false, '', false).showAlert(cont);
       }
     }, (value){
 
@@ -156,16 +150,19 @@ class FirebaseAuthentication {
       if (documentSnapshot.exists) {
         Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
         Utility().saveUserData(data);
-        if (data["name"].toString().length > 0) {
-          
-        }else{
+        // if (data["name"].toString().length > 0) {
+        //
+        // }else{
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ProfileVC(title: 'Flutter Profile Page'),
+                builder: (context) => ProfileVC(title: 'Flutter Profile Page', onClose: () {
+                    textFieldPhone.textFieldIn.controller?.text = '';
+                    print('Reached here');
+                }),
                 fullscreenDialog: true),
           );
-        }
+        // }
       }else{
         var userCurrent = Utility().getUserData();
         userCurrent.countryCode = countryCode;
@@ -178,7 +175,9 @@ class FirebaseAuthentication {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ProfileVC(title: 'Flutter Profile Page'),
+                builder: (context) => ProfileVC(title: 'Flutter Profile Page', onClose: () {
+                  textFieldPhone.textFieldIn.controller?.text = '';
+                }),
                 fullscreenDialog: true),
           );
         });
