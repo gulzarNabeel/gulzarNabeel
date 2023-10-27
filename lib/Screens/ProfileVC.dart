@@ -4,6 +4,7 @@ import 'package:diabetes/Models/User.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../Usables/AuthExceptionHandler.dart';
@@ -26,6 +27,7 @@ class _ProfilePageState extends State<ProfileVC> {
   CustomTextField textFieldName = CustomTextField('Name', TextInputType.name, true);
   CustomTextField textFieldEmail = CustomTextField('Email', TextInputType.emailAddress, true);
   final VoidCallback onClose;
+  XFile? imageFile;
   _ProfilePageState(this.onClose);
   @override
   void initState() {
@@ -84,10 +86,40 @@ class _ProfilePageState extends State<ProfileVC> {
             Padding(
               padding: const EdgeInsets.only(top: 30.0),
               child: Center(
-                child: Container(
-                    width: 200,
+                child: GestureDetector(
+                  onTap: () {
+                    AlertDialogLocal('Choose Image', 'Please select the source of image for your profile', 'Camara', 'Photo Library', () {
+                      print("Camara");
+                      _getFromCamera();
+                    }, () {
+                      print("gallery");
+                      _getFromGallery();
+                    }, false, '', true).showAlert(context);
+                  },
+                  child:Container(
+                    width: 150,
                     height: 150,
-                    child: Image.asset('Assets/appicon.png')),
+                    child:ClipOval(
+                      child: FadeInImage(
+                        fadeInDuration: const Duration(milliseconds: 500),
+                        placeholder: const AssetImage('Assets/appicon.png'),
+                        image: NetworkImage(
+                            Utility().getUserData().profilePictureUrl),
+                        imageErrorBuilder: (context, error, stackTrace) {
+                          return Container(
+                              child: Image.asset("Assets/appicon.png")
+                          );
+                        },
+                        fit: BoxFit.cover, height: 70, width: 70,
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.blue),
+                      borderRadius: BorderRadius.all(Radius.circular(75)
+                      ),
+                    ),
+                  )
+                ),
               ),
             ),
             //Name Text Portion
@@ -242,5 +274,35 @@ class _ProfilePageState extends State<ProfileVC> {
     }, (value){
 
     }, true, 'OTP', true).showAlert(cont);
+  }
+
+  /// Get from gallery
+  _getFromGallery() async {
+    print("Photo library");
+    XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = pickedFile;
+      });
+    }
+  }
+
+  /// Get from Camera
+  _getFromCamera() async {
+    print("Camara");
+    XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = pickedFile;
+      });
+    }
   }
 }

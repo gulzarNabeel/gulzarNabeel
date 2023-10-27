@@ -27,7 +27,7 @@ class AlertDialogLocal extends StatelessWidget {
         if (textNeeded == true) {
           noOnPressed(textFieldIn.textFieldIn.controller?.text ?? '');
         }else{
-          noOnPressed;
+          noOnPressed();
         }
         Navigator.pop(context);
       },
@@ -39,7 +39,7 @@ class AlertDialogLocal extends StatelessWidget {
         if (textNeeded == true) {
           yesOnPressed(textFieldIn.textFieldIn.controller?.text ?? '');
         }else{
-          yesOnPressed;
+          yesOnPressed();
         }
         Navigator.pop(context);
       },
