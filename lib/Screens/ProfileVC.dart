@@ -6,10 +6,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-
+import 'dart:io';
 import '../Usables/AuthExceptionHandler.dart';
 import '../Usables/CustomTextField.dart';
 import '../Usables/Utility.dart';
+import 'package:flutter/src/painting/image_provider.dart';
 
 class ProfileVC extends StatefulWidget {
   final VoidCallback onClose;
@@ -27,10 +28,16 @@ class _ProfilePageState extends State<ProfileVC> {
   CustomTextField textFieldName = CustomTextField('Name', TextInputType.name, true);
   CustomTextField textFieldEmail = CustomTextField('Email', TextInputType.emailAddress, true);
   final VoidCallback onClose;
-  XFile? imageFile;
+  File? imageFile;
   _ProfilePageState(this.onClose);
+  ImageProvider? provider;
   @override
   void initState() {
+    if (imageFile != null) {
+      provider = FileImage(imageFile!);
+    }else{
+      provider = NetworkImage(Utility().getUserData().profilePictureUrl);
+    }
     initCountry();
     super.initState();
   }
@@ -102,15 +109,16 @@ class _ProfilePageState extends State<ProfileVC> {
                     child:ClipOval(
                       child: FadeInImage(
                         fadeInDuration: const Duration(milliseconds: 500),
+                        fit: BoxFit.cover,
+                        height: 70,
+                        width: 70,
                         placeholder: const AssetImage('Assets/appicon.png'),
-                        image: NetworkImage(
-                            Utility().getUserData().profilePictureUrl),
                         imageErrorBuilder: (context, error, stackTrace) {
-                          return Container(
-                              child: Image.asset("Assets/appicon.png")
-                          );
+                            return Container(
+                                child: Image.asset("Assets/appicon.png")
+                            );
                         },
-                        fit: BoxFit.cover, height: 70, width: 70,
+                        image: provider!
                       ),
                     ),
                     decoration: BoxDecoration(
@@ -279,14 +287,13 @@ class _ProfilePageState extends State<ProfileVC> {
   /// Get from gallery
   _getFromGallery() async {
     print("Photo library");
-    XFile? pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 1800,
-      maxHeight: 1800,
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery
     );
     if (pickedFile != null) {
       setState(() {
-        imageFile = pickedFile;
+        imageFile = File(pickedFile.path);
+        initState();
       });
     }
   }
@@ -294,14 +301,15 @@ class _ProfilePageState extends State<ProfileVC> {
   /// Get from Camera
   _getFromCamera() async {
     print("Camara");
-    XFile? pickedFile = await ImagePicker().pickImage(
+    final pickedFile = await ImagePicker().pickImage(
       source: ImageSource.camera,
       maxWidth: 1800,
       maxHeight: 1800,
     );
     if (pickedFile != null) {
       setState(() {
-        imageFile = pickedFile;
+        imageFile = File(pickedFile.path);
+        initState();
       });
     }
   }
