@@ -3,6 +3,7 @@ import 'package:country_calling_code_picker/picker.dart';
 import 'package:diabetes/Models/User.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -22,6 +23,7 @@ class ProfileVC extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfileVC> {
+  FirebaseStorage storage = FirebaseStorage.instance;
   Country? _selectedCountry;
   Text? _countryText = Text("", style: TextStyle(color: Colors.blue, fontSize: 25));
   CustomTextField textFieldPhone = CustomTextField('Phone Number', TextInputType.phone, false);
@@ -34,12 +36,12 @@ class _ProfilePageState extends State<ProfileVC> {
   @override
   void initState() {
     if (imageFile != null) {
+      print('Image ' + imageFile!.path);
       provider = FileImage(imageFile!);
     }else{
       provider = NetworkImage(Utility().getUserData().profilePictureUrl);
     }
     initCountry();
-    super.initState();
   }
   void initCountry() async {
     var country = await getDefaultCountry(context);
@@ -61,12 +63,39 @@ class _ProfilePageState extends State<ProfileVC> {
       textFieldName.textFieldIn.controller?.text  = Utility().getUserData().name;
       textFieldEmail.textFieldIn.controller?.text  = Utility().getUserData().email;
       FirebaseAuth auth = FirebaseAuth.instance;
-      print('Name: ' + (auth.currentUser?.displayName ?? '') + '\nMobile: ' + (auth.currentUser?.phoneNumber ?? '') + '\nUID: ' + (auth.currentUser?.uid ?? '') + '\nEmail: ' + (auth.currentUser?.email ?? ''));
+      print('Name: ' + (auth.currentUser?.displayName ?? '') + '\nMobile: ' + (auth.currentUser?.phoneNumber ?? '') + '\nProfile Picture: ' + (auth.currentUser?.photoURL ?? '') + '\nUID: ' + (auth.currentUser?.uid ?? '') + '\nEmail: ' + (auth.currentUser?.email ?? ''));
     });
   }
 
-  void _onPressedShowBottomSheet() async {
-
+  Future uploadFile() async {
+    if (imageFile == null) return;
+    final destination = (FirebaseAuth.instance.currentUser?.uid ?? 'ProfilePicture');
+  print('error occured 1');
+    try {
+      final ref = FirebaseStorage.instance
+          .ref(destination)
+          .child('ProfilePicture.' + imageFile!.path.split('.').last);
+      await ref.putFile(imageFile!).then((p0) async {
+        await ref.getDownloadURL().then((value){
+          print(value);
+          var currentUser = Utility().getUserData();
+          FirebaseAuth auth = FirebaseAuth.instance;
+          auth.currentUser?.updatePhotoURL(
+              value).then((
+              value2) {
+            currentUser.profilePictureUrl = value;
+            currentUser.updateData();
+            imageFile = null;
+            initState();
+          }).catchError((error){
+            textFieldEmail.textFieldIn.controller?.text = '';
+            AlertDialogLocal("Failure", AuthExceptionHandler.generateExceptionMessage(AuthExceptionHandler.handleException(error)), 'OK', '', (){}, (){}, false, '', false).showAlert(context);
+          });
+        });
+      });
+    } catch (e) {
+      print('error occured');
+    }
   }
 
   @override
@@ -96,7 +125,6 @@ class _ProfilePageState extends State<ProfileVC> {
                 child: GestureDetector(
                   onTap: () {
                     AlertDialogLocal('Choose Image', 'Please select the source of image for your profile', 'Camara', 'Photo Library', () {
-                      print("Camara");
                       _getFromCamera();
                     }, () {
                       print("gallery");
@@ -146,7 +174,6 @@ class _ProfilePageState extends State<ProfileVC> {
                   children: <Widget>[
                     TextButton(
                       onPressed: () {
-                        _onPressedShowBottomSheet();
                       },
                       child: Container(
                         color: Colors.white.withOpacity(0),
@@ -189,7 +216,7 @@ class _ProfilePageState extends State<ProfileVC> {
   }
 
   updateProfile(BuildContext context) async {
-    if ((textFieldEmail.textFieldIn.controller?.text ?? '') == Utility().getUserData().email && (textFieldName.textFieldIn.controller?.text ?? '') == Utility().getUserData().name) {
+    if ((textFieldEmail.textFieldIn.controller?.text ?? '') == Utility().getUserData().email && (textFieldName.textFieldIn.controller?.text ?? '') == Utility().getUserData().name && imageFile == null) {
       return;
     }
     if ((textFieldName.textFieldIn.controller?.text ?? '').length <= 0) {
@@ -258,6 +285,9 @@ class _ProfilePageState extends State<ProfileVC> {
                 auth.currentUser?.updateEmail(textFieldEmail.textFieldIn.controller?.text ?? '').then((value){
                   currentUser.email = (textFieldEmail.textFieldIn.controller?.text ?? '');
                   currentUser.updateData();
+                  if (imageFile != null) {
+                    uploadFile();
+                  }
                 }).catchError((error){
                   textFieldEmail.textFieldIn.controller?.text = '';
                   AlertDialogLocal("Failure", AuthExceptionHandler.generateExceptionMessage(AuthExceptionHandler.handleException(error)), 'OK', '', (){}, (){}, false, '', false).showAlert(cont);
@@ -270,10 +300,15 @@ class _ProfilePageState extends State<ProfileVC> {
                 value) {
               currentUser.email = (textFieldEmail.textFieldIn.controller?.text ?? '');
               currentUser.updateData();
+              if (imageFile != null) {
+                uploadFile();
+              }
             }).catchError((error){
               textFieldEmail.textFieldIn.controller?.text = '';
               AlertDialogLocal("Failure", AuthExceptionHandler.generateExceptionMessage(AuthExceptionHandler.handleException(error)), 'OK', '', (){}, (){}, false, '', false).showAlert(cont);
             });
+          }else if (imageFile != null) {
+            uploadFile();
           }
         });
       } catch (error) {
@@ -300,15 +335,14 @@ class _ProfilePageState extends State<ProfileVC> {
 
   /// Get from Camera
   _getFromCamera() async {
-    print("Camara");
+
     final pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.camera,
-      maxWidth: 1800,
-      maxHeight: 1800,
+      source: ImageSource.camera
     );
     if (pickedFile != null) {
       setState(() {
         imageFile = File(pickedFile.path);
+        print("Camara  " + pickedFile.path);
         initState();
       });
     }
