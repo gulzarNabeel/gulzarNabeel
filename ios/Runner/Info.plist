@@ -41,6 +41,10 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>We would like to access Camera to access images for better user experience in app</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We would like to access Photo library to access images for better user experience in app</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -62,9 +66,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-    <key>NSCameraUsageDescription</key>
-    <string>We would like to access Camera to access images for better user experience in app</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>We would like to access Photo library to access images for better user experience in app</string>
 </dict>
 </plist>

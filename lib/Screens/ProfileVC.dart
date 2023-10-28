@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_calling_code_picker/picker.dart';
 import 'package:diabetes/Models/User.dart';
@@ -36,9 +38,11 @@ class _ProfilePageState extends State<ProfileVC> {
   @override
   void initState() {
     if (imageFile != null) {
-      print('Image ' + imageFile!.path);
+      print('Image Selected ' + imageFile!.path);
       provider = FileImage(imageFile!);
+      print(provider!);
     }else{
+      print('Image Selected URL ' + Utility().getUserData().profilePictureUrl);
       provider = NetworkImage(Utility().getUserData().profilePictureUrl);
     }
     initCountry();
@@ -70,7 +74,6 @@ class _ProfilePageState extends State<ProfileVC> {
   Future uploadFile() async {
     if (imageFile == null) return;
     final destination = (FirebaseAuth.instance.currentUser?.uid ?? 'ProfilePicture');
-  print('error occured 1');
     try {
       final ref = FirebaseStorage.instance
           .ref(destination)
@@ -84,11 +87,13 @@ class _ProfilePageState extends State<ProfileVC> {
               value).then((
               value2) {
             currentUser.profilePictureUrl = value;
-            currentUser.updateData();
+            currentUser.updateData() ;
             imageFile = null;
-            initState();
+            Timer.periodic(Duration(milliseconds: 500), (timer) {
+              timer.cancel();
+              initState();
+            });
           }).catchError((error){
-            textFieldEmail.textFieldIn.controller?.text = '';
             AlertDialogLocal("Failure", AuthExceptionHandler.generateExceptionMessage(AuthExceptionHandler.handleException(error)), 'OK', '', (){}, (){}, false, '', false).showAlert(context);
           });
         });
@@ -142,6 +147,7 @@ class _ProfilePageState extends State<ProfileVC> {
                         width: 70,
                         placeholder: const AssetImage('Assets/appicon.png'),
                         imageErrorBuilder: (context, error, stackTrace) {
+                          print('Image display Error: ' + error.toString());
                             return Container(
                                 child: Image.asset("Assets/appicon.png")
                             );
@@ -328,7 +334,10 @@ class _ProfilePageState extends State<ProfileVC> {
     if (pickedFile != null) {
       setState(() {
         imageFile = File(pickedFile.path);
-        initState();
+        Timer.periodic(Duration(milliseconds: 500), (timer) {
+          timer.cancel();
+          initState();
+        });
       });
     }
   }
@@ -342,8 +351,10 @@ class _ProfilePageState extends State<ProfileVC> {
     if (pickedFile != null) {
       setState(() {
         imageFile = File(pickedFile.path);
-        print("Camara  " + pickedFile.path);
-        initState();
+        Timer.periodic(Duration(milliseconds: 500), (timer) {
+          timer.cancel();
+          initState();
+        });
       });
     }
   }
