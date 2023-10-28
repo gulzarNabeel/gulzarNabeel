@@ -13,7 +13,7 @@ import 'dart:io';
 import '../Usables/AuthExceptionHandler.dart';
 import '../Usables/CustomTextField.dart';
 import '../Usables/Utility.dart';
-import 'package:flutter/src/painting/image_provider.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
 class ProfileVC extends StatefulWidget {
   final VoidCallback onClose;
@@ -34,17 +34,9 @@ class _ProfilePageState extends State<ProfileVC> {
   final VoidCallback onClose;
   File? imageFile;
   _ProfilePageState(this.onClose);
-  ImageProvider? provider;
   @override
   void initState() {
-    if (imageFile != null) {
-      print('Image Selected ' + imageFile!.path);
-      provider = FileImage(imageFile!);
-      print(provider!);
-    }else{
-      print('Image Selected URL ' + Utility().getUserData().profilePictureUrl);
-      provider = NetworkImage(Utility().getUserData().profilePictureUrl);
-    }
+    super.initState();
     initCountry();
   }
   void initCountry() async {
@@ -66,8 +58,6 @@ class _ProfilePageState extends State<ProfileVC> {
       textFieldPhone.textFieldIn.controller?.text  = Utility().getUserData().phoneNumber;
       textFieldName.textFieldIn.controller?.text  = Utility().getUserData().name;
       textFieldEmail.textFieldIn.controller?.text  = Utility().getUserData().email;
-      FirebaseAuth auth = FirebaseAuth.instance;
-      print('Name: ' + (auth.currentUser?.displayName ?? '') + '\nMobile: ' + (auth.currentUser?.phoneNumber ?? '') + '\nProfile Picture: ' + (auth.currentUser?.photoURL ?? '') + '\nUID: ' + (auth.currentUser?.uid ?? '') + '\nEmail: ' + (auth.currentUser?.email ?? ''));
     });
   }
 
@@ -140,20 +130,7 @@ class _ProfilePageState extends State<ProfileVC> {
                     width: 150,
                     height: 150,
                     child:ClipOval(
-                      child: FadeInImage(
-                        fadeInDuration: const Duration(milliseconds: 500),
-                        fit: BoxFit.cover,
-                        height: 70,
-                        width: 70,
-                        placeholder: const AssetImage('Assets/appicon.png'),
-                        imageErrorBuilder: (context, error, stackTrace) {
-                          print('Image display Error: ' + error.toString());
-                            return Container(
-                                child: Image.asset("Assets/appicon.png")
-                            );
-                        },
-                        image: provider!
-                      ),
+                      child: imageFile != null ? Image.file(imageFile!) : Utility().getUserData().profilePictureUrl.length > 0 ? Image.network(Utility().getUserData().profilePictureUrl) : Image(image: AssetImage('Assets/appicon.png')),
                     ),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.blue),
