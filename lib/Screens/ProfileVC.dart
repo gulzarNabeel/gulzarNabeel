@@ -36,7 +36,11 @@ class _ProfilePageState extends State<ProfileVC> {
   _ProfilePageState(this.onClose);
   @override
   void initState() {
-    super.initState();
+    if ((FirebaseAuth.instance.currentUser?.emailVerified ?? false) == false) {
+      FirebaseAuth.instance.currentUser?.reload().then((value) {
+          initState();
+      });
+    }
     initCountry();
   }
   void initCountry() async {
@@ -171,9 +175,27 @@ class _ProfilePageState extends State<ProfileVC> {
             Padding(
                 padding: EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 20),
               child: Row(
-                  children: <Widget>[
-                    textFieldEmail,
-                  ]
+                children: [
+                  textFieldEmail,
+                  Visibility(
+                      visible: (FirebaseAuth.instance.currentUser?.emailVerified ?? false),
+                      child: Icon(
+                        Icons.verified_user,
+                        color: Colors.blue,
+                      )
+                  ),
+                  Visibility(
+                      visible: !(FirebaseAuth.instance.currentUser?.emailVerified ?? false),
+                      child: GestureDetector(
+                          onTap: () {
+                            FirebaseAuth.instance.currentUser?.sendEmailVerification().then((value){
+                              AlertDialogLocal('Success', 'Verification link has been sent to your email', 'OK', '', (){}, (){}, false, '', false).showAlert(context);
+                            });
+                          },
+                          child: Text('Verify', style: TextStyle(color: Colors.blue, fontSize: 15))
+                      ),
+                  )
+                ],
               ),
             ),
 
@@ -187,8 +209,8 @@ class _ProfilePageState extends State<ProfileVC> {
                   updateProfile(context);
                 },
                 child: Text(
-                  'Update',
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                  ((textFieldEmail.textFieldIn.controller?.text ?? '') == Utility().getUserData().email && (textFieldName.textFieldIn.controller?.text ?? '') == Utility().getUserData().name && imageFile == null) ? 'You can update profile' : 'Update',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
             ),
