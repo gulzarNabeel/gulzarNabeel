@@ -83,8 +83,8 @@ class _ProfilePageState extends State<ProfileVC> {
               value2) {
             currentUser.profilePictureUrl = value;
             currentUser.updateData() ;
-            imageFile = null;
-            Timer.periodic(Duration(milliseconds: 500), (timer) {
+            Timer.periodic(Duration(seconds: 5), (timer) {
+              imageFile = null;
               timer.cancel();
               initState();
             });
@@ -208,10 +208,7 @@ class _ProfilePageState extends State<ProfileVC> {
                 onPressed: () {
                   updateProfile(context);
                 },
-                child: Text(
-                  ((textFieldEmail.textFieldIn.controller?.text ?? '') == Utility().getUserData().email && (textFieldName.textFieldIn.controller?.text ?? '') == Utility().getUserData().name && imageFile == null) ? 'You can update profile' : 'Update',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
+                child: Text('Update', style: TextStyle(color: Colors.white, fontSize: 20)),
               ),
             ),
           ],
@@ -331,41 +328,16 @@ class _ProfilePageState extends State<ProfileVC> {
     );
     if (pickedFile != null) {
       croppingImage(File(pickedFile.path));
-      // Navigator.push(context,  MaterialPageRoute(
-      //   builder: (context) => DisplayPictureScreen(imagePath: File(pickedFile.path), onClose: (String value) {
-      //     setState(() {
-      //       imageFile = File(pickedFile.path);
-      //       Timer.periodic(Duration(milliseconds: 500), (timer) {
-      //         timer.cancel();
-      //         initState();
-      //       });
-      //     });
-      //   }),
-      // ),
-      // );
     }
   }
 
   /// Get from Camera
   _getFromCamera() async {
-
     final pickedFile = await ImagePicker().pickImage(
       source: ImageSource.camera
     );
     if (pickedFile != null) {
       croppingImage(File(pickedFile.path));
-      // Navigator.push(context,  MaterialPageRoute(
-      //     builder: (context) => DisplayPictureScreen(imagePath: File(pickedFile.path), onClose: (String value) {
-      //       setState(() {
-      //         imageFile = File(pickedFile.path);
-      //         Timer.periodic(Duration(milliseconds: 500), (timer) {
-      //           timer.cancel();
-      //           initState();
-      //         });
-      //       });
-      //     }),
-      //   ),
-      // );
     }
   }
 
@@ -383,10 +355,7 @@ class _ProfilePageState extends State<ProfileVC> {
     if(croppedFile!=null){
       setState(() {
         imageFile = File(croppedFile.path);
-        Timer.periodic(Duration(milliseconds: 500), (timer) {
-          timer.cancel();
-          initState();
-        });
+        initState();
       });
     }
   }
