@@ -4,16 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_calling_code_picker/picker.dart';
 import 'package:diabetes/Models/User.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
+import 'package:diabetes/Usables/DisplayPictureScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import '../Usables/AuthExceptionHandler.dart';
 import '../Usables/CustomTextField.dart';
 import '../Usables/Utility.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class ProfileVC extends StatefulWidget {
   final VoidCallback onClose;
@@ -126,7 +127,6 @@ class _ProfilePageState extends State<ProfileVC> {
                     AlertDialogLocal('Choose Image', 'Please select the source of image for your profile', 'Camara', 'Photo Library', () {
                       _getFromCamera();
                     }, () {
-                      print("gallery");
                       _getFromGallery();
                     }, false, '', true).showAlert(context);
                   },
@@ -326,18 +326,23 @@ class _ProfilePageState extends State<ProfileVC> {
 
   /// Get from gallery
   _getFromGallery() async {
-    print("Photo library");
     final pickedFile = await ImagePicker().pickImage(
       source: ImageSource.gallery
     );
     if (pickedFile != null) {
-      setState(() {
-        imageFile = File(pickedFile.path);
-        Timer.periodic(Duration(milliseconds: 500), (timer) {
-          timer.cancel();
-          initState();
-        });
-      });
+      croppingImage(File(pickedFile.path));
+      // Navigator.push(context,  MaterialPageRoute(
+      //   builder: (context) => DisplayPictureScreen(imagePath: File(pickedFile.path), onClose: (String value) {
+      //     setState(() {
+      //       imageFile = File(pickedFile.path);
+      //       Timer.periodic(Duration(milliseconds: 500), (timer) {
+      //         timer.cancel();
+      //         initState();
+      //       });
+      //     });
+      //   }),
+      // ),
+      // );
     }
   }
 
@@ -348,8 +353,36 @@ class _ProfilePageState extends State<ProfileVC> {
       source: ImageSource.camera
     );
     if (pickedFile != null) {
+      croppingImage(File(pickedFile.path));
+      // Navigator.push(context,  MaterialPageRoute(
+      //     builder: (context) => DisplayPictureScreen(imagePath: File(pickedFile.path), onClose: (String value) {
+      //       setState(() {
+      //         imageFile = File(pickedFile.path);
+      //         Timer.periodic(Duration(milliseconds: 500), (timer) {
+      //           timer.cancel();
+      //           initState();
+      //         });
+      //       });
+      //     }),
+      //   ),
+      // );
+    }
+  }
+
+  Future<Null> croppingImage(File imagePath) async {
+    var croppedFile = (await ImageCropper().cropImage(
+      sourcePath: imagePath.path,
+      aspectRatioPresets: Platform.isAndroid
+          ? [
+        CropAspectRatioPreset.square
+      ]
+          : [
+        CropAspectRatioPreset.square
+      ],
+    ));
+    if(croppedFile!=null){
       setState(() {
-        imageFile = File(pickedFile.path);
+        imageFile = File(croppedFile.path);
         Timer.periodic(Duration(milliseconds: 500), (timer) {
           timer.cancel();
           initState();
