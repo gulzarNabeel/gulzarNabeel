@@ -18,8 +18,8 @@ import '../Usables/Utility.dart';
 
 class ProfileVC extends StatefulWidget {
   final VoidCallback onClose;
-
-  const ProfileVC({super.key, required this.title, required this.onClose});
+  final bool Signup;
+  const ProfileVC({super.key, required this.title, required this.Signup, required this.onClose});
   final String title;
   @override
   State<ProfileVC> createState() => _ProfilePageState(onClose);
@@ -28,7 +28,7 @@ class ProfileVC extends StatefulWidget {
 class _ProfilePageState extends State<ProfileVC> {
   FirebaseStorage storage = FirebaseStorage.instance;
   Country? _selectedCountry;
-  Text? _countryText = Text("", style: TextStyle(color: Colors.blue, fontSize: 25));
+  Text? _countryText = const Text("", style: TextStyle(color: Colors.blue, fontSize: 25));
   CustomTextField textFieldPhone = CustomTextField('Phone Number', TextInputType.phone, false);
   CustomTextField textFieldName = CustomTextField('Name', TextInputType.name, true);
   CustomTextField textFieldEmail = CustomTextField('Email', TextInputType.emailAddress, true);
@@ -56,9 +56,9 @@ class _ProfilePageState extends State<ProfileVC> {
       }
       _selectedCountry = country;
       if (Utility().getUserData().countryCode == _selectedCountry!.callingCode) {
-        _countryText = Text(_selectedCountry?.callingCode ?? "", style: TextStyle(color: Colors.blue, fontSize: 25));
+        _countryText = Text(_selectedCountry?.callingCode ?? "", style: const TextStyle(color: Colors.blue, fontSize: 25));
       }else{
-        _countryText = Text(Utility().getUserData().countryCode, style: TextStyle(color: Colors.blue, fontSize: 25));
+        _countryText = Text(Utility().getUserData().countryCode, style: const TextStyle(color: Colors.blue, fontSize: 25));
       }
       textFieldPhone.textFieldIn.controller?.text  = Utility().getUserData().phoneNumber;
       textFieldName.textFieldIn.controller?.text  = Utility().getUserData().name;
@@ -72,7 +72,7 @@ class _ProfilePageState extends State<ProfileVC> {
     try {
       final ref = FirebaseStorage.instance
           .ref(destination)
-          .child('ProfilePicture.' + imageFile!.path.split('.').last);
+          .child('ProfilePicture.${imageFile!.path.split('.').last}');
       await ref.putFile(imageFile!).then((p0) async {
         await ref.getDownloadURL().then((value){
           print(value);
@@ -83,7 +83,7 @@ class _ProfilePageState extends State<ProfileVC> {
               value2) {
             currentUser.profilePictureUrl = value;
             currentUser.updateData() ;
-            Timer.periodic(Duration(seconds: 5), (timer) {
+            Timer.periodic(const Duration(seconds: 5), (timer) {
               imageFile = null;
               timer.cancel();
               initState();
@@ -94,7 +94,7 @@ class _ProfilePageState extends State<ProfileVC> {
         });
       });
     } catch (e) {
-      print('error occured');
+      print('error occurred');
     }
   }
 
@@ -103,7 +103,7 @@ class _ProfilePageState extends State<ProfileVC> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Profile"),
+        title: const Text("Profile"),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -133,13 +133,13 @@ class _ProfilePageState extends State<ProfileVC> {
                   child:Container(
                     width: 150,
                     height: 150,
-                    child:ClipOval(
-                      child: imageFile != null ? Image.file(imageFile!) : Utility().getUserData().profilePictureUrl.length > 0 ? Image.network(Utility().getUserData().profilePictureUrl) : Image(image: AssetImage('Assets/appicon.png')),
-                    ),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.blue),
                       borderRadius: BorderRadius.all(Radius.circular(75)
                       ),
+                    ),
+                    child:ClipOval(
+                      child: imageFile != null ? Image.file(imageFile!) : Utility().getUserData().profilePictureUrl.length > 0 ? Image.network(Utility().getUserData().profilePictureUrl) : Image(image: AssetImage('Assets/appicon.png')),
                     ),
                   )
                 ),
@@ -147,7 +147,7 @@ class _ProfilePageState extends State<ProfileVC> {
             ),
             //Name Text Portion
             Padding(
-              padding: EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 20),
+              padding: const EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 20),
               child: Row(
                   children: <Widget>[
                     textFieldName,
@@ -156,7 +156,7 @@ class _ProfilePageState extends State<ProfileVC> {
             ),
             //Phone Number portion
             Padding(
-              padding: EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 20),
+              padding: const EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 20),
               child: Row(
                   children: <Widget>[
                     TextButton(
@@ -173,13 +173,13 @@ class _ProfilePageState extends State<ProfileVC> {
               ),
             ),
             Padding(
-                padding: EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 20),
+                padding: const EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 20),
               child: Row(
                 children: [
                   textFieldEmail,
                   Visibility(
                       visible: (FirebaseAuth.instance.currentUser?.emailVerified ?? false),
-                      child: Icon(
+                      child: const Icon(
                         Icons.verified_user,
                         color: Colors.blue,
                       )
@@ -192,7 +192,7 @@ class _ProfilePageState extends State<ProfileVC> {
                               AlertDialogLocal('Success', 'Verification link has been sent to your email', 'OK', '', (){}, (){}, false, '', false).showAlert(context);
                             });
                           },
-                          child: Text('Verify', style: TextStyle(color: Colors.blue, fontSize: 15))
+                          child: const Text('Verify', style: TextStyle(color: Colors.blue, fontSize: 15))
                       ),
                   )
                 ],
@@ -208,7 +208,7 @@ class _ProfilePageState extends State<ProfileVC> {
                 onPressed: () {
                   updateProfile(context);
                 },
-                child: Text('Update', style: TextStyle(color: Colors.white, fontSize: 20)),
+                child: const Text('Update', style: TextStyle(color: Colors.white, fontSize: 20)),
               ),
             ),
           ],
@@ -221,7 +221,7 @@ class _ProfilePageState extends State<ProfileVC> {
     if ((textFieldEmail.textFieldIn.controller?.text ?? '') == Utility().getUserData().email && (textFieldName.textFieldIn.controller?.text ?? '') == Utility().getUserData().name && imageFile == null) {
       return;
     }
-    if ((textFieldName.textFieldIn.controller?.text ?? '').length <= 0) {
+    if ((textFieldName.textFieldIn.controller?.text ?? '').isEmpty) {
       AlertDialogLocal(
           'Alert',
           'Please enter your name',
@@ -232,7 +232,7 @@ class _ProfilePageState extends State<ProfileVC> {
           false).showAlert(context);
       return;
     }
-    if ((textFieldEmail.textFieldIn.controller?.text ?? '').length <= 0) {
+    if ((textFieldEmail.textFieldIn.controller?.text ?? '').isEmpty) {
       AlertDialogLocal(
           'Alert',
           'Please enter your email address in correct format',

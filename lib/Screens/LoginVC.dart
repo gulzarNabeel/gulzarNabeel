@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:diabetes/Models/User.dart';
+import 'package:diabetes/Screens/HomeVC.dart';
 import 'package:diabetes/Screens/ProfileVC.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:diabetes/Usables/Utility.dart';
@@ -150,19 +151,24 @@ class _LoginPageState extends State<LoginVC> {
       if (documentSnapshot.exists) {
         Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
         Utility().saveUserData(data);
-        // if (data["name"].toString().length > 0) {
-        //
-        // }else{
+        if (data["name"].toString().length > 0) {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ProfileVC(title: 'Flutter Profile Page', onClose: () {
+                builder: (context) => HomeVC(title: 'Flutter Profile Page'),
+                fullscreenDialog: true),
+          );
+        }else{
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProfileVC(title: 'Flutter Profile Page', Signup: true, onClose: () {
                     textFieldPhone.textFieldIn.controller?.text = '';
                     print('Reached here');
                 }),
                 fullscreenDialog: true),
           );
-        // }
+        }
       }else{
         var userCurrent = Utility().getUserData();
         userCurrent.countryCode = countryCode;
@@ -175,7 +181,7 @@ class _LoginPageState extends State<LoginVC> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ProfileVC(title: 'Flutter Profile Page', onClose: () {
+                builder: (context) => ProfileVC(title: 'Flutter Profile Page', Signup: true, onClose: () {
                   textFieldPhone.textFieldIn.controller?.text = '';
                 }),
                 fullscreenDialog: true),
