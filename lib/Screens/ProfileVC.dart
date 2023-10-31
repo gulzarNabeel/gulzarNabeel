@@ -26,7 +26,6 @@ class ProfileVC extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfileVC> {
-  FirebaseStorage storage = FirebaseStorage.instance;
   Country? _selectedCountry;
   Text? _countryText = const Text("", style: TextStyle(color: Colors.blue, fontSize: 25));
   CustomTextField textFieldPhone = CustomTextField('Phone Number', TextInputType.phone, false);

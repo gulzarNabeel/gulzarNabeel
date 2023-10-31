@@ -155,7 +155,7 @@ class _LoginPageState extends State<LoginVC> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => HomeVC(title: 'Flutter Profile Page'),
+                builder: (context) => HomeVC(),
                 fullscreenDialog: true),
           );
         }else{

@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
             Utility().saveUserData(data);
             if (data["name"].toString().length > 0) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeVC(title: 'Flutter Profile Page'),fullscreenDialog: true));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeVC(),fullscreenDialog: true));
             }else{
             Navigator.push(
               context,
