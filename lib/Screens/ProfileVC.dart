@@ -22,7 +22,7 @@ class ProfileVC extends StatefulWidget {
   const ProfileVC({super.key, required this.title, required this.Signup, required this.onClose});
   final String title;
   @override
-  State<ProfileVC> createState() => _ProfilePageState(onClose);
+  State<ProfileVC> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfileVC> {
@@ -31,9 +31,8 @@ class _ProfilePageState extends State<ProfileVC> {
   CustomTextField textFieldPhone = CustomTextField('Phone Number', TextInputType.phone, false);
   CustomTextField textFieldName = CustomTextField('Name', TextInputType.name, true);
   CustomTextField textFieldEmail = CustomTextField('Email', TextInputType.emailAddress, true);
-  final VoidCallback onClose;
   File? imageFile;
-  _ProfilePageState(this.onClose);
+  _ProfilePageState();
   @override
   void initState() {
     if ((FirebaseAuth.instance.currentUser?.emailVerified ?? false) == false) {
@@ -109,7 +108,7 @@ class _ProfilePageState extends State<ProfileVC> {
             tooltip: 'Logout',
             onPressed: () async {
               await FirebaseAuth.instance.signOut().then((value) {
-                  onClose();
+                  widget.onClose();
                   Navigator.pop(context);
               });
             },
@@ -350,6 +349,7 @@ class _ProfilePageState extends State<ProfileVC> {
           : [
         CropAspectRatioPreset.square
       ],
+      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1)
     ));
     if(croppedFile!=null){
       setState(() {

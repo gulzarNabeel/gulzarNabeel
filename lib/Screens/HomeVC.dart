@@ -8,6 +8,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 class HomeVC extends StatefulWidget {
+  final VoidCallback onClose;
+
+  const HomeVC({super.key, required this.onClose});
+
   @override
   _HomeVCState createState() => new _HomeVCState();
 }
@@ -34,7 +38,15 @@ class _HomeVCState extends State<HomeVC> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    super.initState();
+    itemsIn = [
+      Pair("Home", ProfileVC(title: 'Home', Signup: false, onClose: () {})),
+      Pair("Feeds", ProfileVC(title: 'Feeds', Signup: false, onClose: () {})),
+      Pair("Add", ProfileVC(title: 'Add', Signup: false, onClose: () {})),
+      Pair("Devices", ProfileVC(title: 'Devices', Signup: false, onClose: () {})),
+      Pair("Profile", ProfileVC(title: 'Profile', Signup: false, onClose: () {
+        widget.onClose();
+      }))
+    ];
     if (_routeTo == 2) {
       // Navigator.push(
       //     context,
@@ -71,7 +83,6 @@ class _HomeVCState extends State<HomeVC> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    print("Route 2 is ${_routeTo}");
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
@@ -95,7 +106,17 @@ class _HomeVCState extends State<HomeVC> with SingleTickerProviderStateMixin {
               ),
             ),
             title: Text(titleText, textAlign: TextAlign.center),
-            actions: [
+            actions: _routeTo == 4 ? [
+            IconButton(
+              icon: const Icon(Icons.logout),
+              tooltip: 'Logout',
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut().then((value) {
+                  widget.onClose();
+                  Navigator.pop(context);
+                });
+              },
+            ),] : [
               IconButton(
                 icon: const Icon(Icons.refresh),
                 tooltip: 'Refresh',

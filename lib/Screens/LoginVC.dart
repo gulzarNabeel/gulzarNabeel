@@ -155,7 +155,10 @@ class _LoginPageState extends State<LoginVC> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => HomeVC(),
+                builder: (context) => HomeVC(onClose: (){
+                  textFieldPhone.textFieldIn.controller?.text = '';
+                  print('Reached here');
+                }),
                 fullscreenDialog: true),
           );
         }else{
