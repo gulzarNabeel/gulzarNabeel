@@ -101,7 +101,7 @@ class _ProfilePageState extends State<ProfileVC> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      appBar: widget.Signup == true ? AppBar(
         title: const Text("Profile"),
         actions: [
           IconButton(
@@ -114,7 +114,7 @@ class _ProfilePageState extends State<ProfileVC> {
               });
             },
           ),],
-      ),
+      ) : null,
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -343,7 +343,7 @@ class _ProfilePageState extends State<ProfileVC> {
   Future<Null> croppingImage(File imagePath) async {
     var croppedFile = (await ImageCropper().cropImage(
       sourcePath: imagePath.path,
-      aspectRatioPresets: Platform.isAndroid
+      aspectRatioPresets: Platform.isIOS
           ? [
         CropAspectRatioPreset.square
       ]
