@@ -88,24 +88,22 @@ class _ProfilePageState extends State<ProfileVC> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: widget.Signup == true
-          ? AppBar(
-              title: const Text("Profile"),
-              automaticallyImplyLeading: false,
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.logout),
-                  tooltip: 'Logout',
-                  onPressed: () async {
-                    await FirebaseAuth.instance.signOut().then((value) {
-                      widget.onClose();
-                      Navigator.pop(context);
-                    });
-                  },
-                ),
-              ],
-            )
-          : null,
+      appBar: AppBar(
+        title: const Text("Profile"),
+        automaticallyImplyLeading: widget.Signup == true ? false : true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut().then((value) {
+                widget.onClose();
+                Navigator.pop(context);
+              });
+            },
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -366,7 +364,7 @@ class _ProfilePageState extends State<ProfileVC> {
                           false)
                       .showAlert(cont);
                 });
-              }else{
+              } else {
                 uploadFile();
               }
             });
@@ -451,59 +449,67 @@ class _ProfilePageState extends State<ProfileVC> {
 
   Future uploadFile() async {
     if (imageFile == null) {
-      if (widget.Signup == true ) {
-        Timer.periodic(const Duration(seconds: 3), (timer)
-        {
+      if (widget.Signup == true) {
+        Timer.periodic(const Duration(seconds: 3), (timer) {
           timer.cancel();
-          Navigator.push(context, MaterialPageRoute(builder: (context) =>
-              TabBarVC(onClose: () {
-                print(FirebaseAuth.instance.currentUser);
-                if (FirebaseAuth.instance.currentUser == null) {
-                  widget.onClose();
-                }
-              }), fullscreenDialog: true));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TabBarVC(onClose: () {
+                        if (FirebaseAuth.instance.currentUser == null) {
+                          widget.onClose();
+                        }
+                      }),
+                  fullscreenDialog: true));
         });
+      } else {
+        Navigator.pop(context);
       }
     } else {
-      final destination = (FirebaseAuth.instance.currentUser?.uid ??
-          'ProfilePicture');
+      final destination =
+          (FirebaseAuth.instance.currentUser?.uid ?? 'ProfilePicture');
       try {
         final ref = FirebaseStorage.instance
             .ref(destination)
-            .child('ProfilePicture.${imageFile!
-            .path
-            .split('.')
-            .last}');
+            .child('ProfilePicture.${imageFile!.path.split('.').last}');
         await ref.putFile(imageFile!).then((p0) async {
           await ref.getDownloadURL().then((value) {
-            print(value);
             var currentUser = Utility().getUserData();
             FirebaseAuth auth = FirebaseAuth.instance;
-            auth.currentUser?.updatePhotoURL(
-                value).then((value2) {
+            auth.currentUser?.updatePhotoURL(value).then((value2) {
               currentUser.profilePictureUrl = value;
               currentUser.updateData();
               Timer.periodic(const Duration(seconds: 3), (timer) {
                 imageFile = null;
                 timer.cancel();
                 initState();
-                Navigator.push(context, MaterialPageRoute(builder: (context) => TabBarVC(onClose:(){
-                  print(FirebaseAuth.instance.currentUser);
-                  if (FirebaseAuth.instance.currentUser == null) {
-                    widget.onClose();
-                  }
-                }),fullscreenDialog: true));
+                if (widget.Signup == true) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TabBarVC(onClose: () {
+                                if (FirebaseAuth.instance.currentUser == null) {
+                                  widget.onClose();
+                                }
+                              }),
+                          fullscreenDialog: true));
+                } else {
+                  Navigator.pop(context);
+                }
               });
             }).catchError((error) {
               AlertDialogLocal(
-                  "Failure",
-                  AuthExceptionHandler.generateExceptionMessage(
-                      AuthExceptionHandler.handleException(error)),
-                  'OK',
-                  '', () {}, () {},
-                  false,
-                  '',
-                  false).showAlert(context);
+                      "Failure",
+                      AuthExceptionHandler.generateExceptionMessage(
+                          AuthExceptionHandler.handleException(error)),
+                      'OK',
+                      '',
+                      () {},
+                      () {},
+                      false,
+                      '',
+                      false)
+                  .showAlert(context);
             });
           });
         });

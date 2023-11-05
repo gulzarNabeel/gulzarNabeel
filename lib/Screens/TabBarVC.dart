@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:ffi';
+import 'package:diabetes/Screens/TabBar/DevicesVC.dart';
 import 'package:diabetes/Screens/ProfileVC.dart';
+import 'package:diabetes/Screens/TabBar/FeedsVC.dart';
+import 'package:diabetes/Screens/TabBar/HomeVC.dart';
+import 'package:diabetes/Screens/TabBar/SettingsVC.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
@@ -23,15 +27,10 @@ class Pair<String, Object> {
   Pair(this.title, this.obj);
 }
 
-class _TabBarVCState extends State<TabBarVC> with SingleTickerProviderStateMixin {
+class _TabBarVCState extends State<TabBarVC>
+    with SingleTickerProviderStateMixin {
   String titleText = "My Sessions";
-  List<Pair> itemsIn = [
-    Pair("Home", ProfileVC(title: 'Home', Signup: false, onClose: () {})),
-    Pair("Feeds", ProfileVC(title: 'Feeds', Signup: false, onClose: () {})),
-    Pair("Add", ProfileVC(title: 'Add', Signup: false, onClose: () {})),
-    Pair("Devices", ProfileVC(title: 'Devices', Signup: false, onClose: () {})),
-    Pair("Profile", ProfileVC(title: 'Profile', Signup: false, onClose: () {}))
-  ];
+  List<Pair> itemsIn = [];
 
   int _routeTo = 0;
   List<Map<String, Object>>? _pages;
@@ -39,13 +38,11 @@ class _TabBarVCState extends State<TabBarVC> with SingleTickerProviderStateMixin
   @override
   void initState() {
     itemsIn = [
-      Pair("Home", ProfileVC(title: 'Home', Signup: false, onClose: () {})),
-      Pair("Feeds", ProfileVC(title: 'Feeds', Signup: false, onClose: () {})),
+      Pair("Home", const HomeVC()),
+      Pair("Feeds", const FeedsVC()),
       Pair("Add", ProfileVC(title: 'Add', Signup: false, onClose: () {})),
-      Pair("Devices", ProfileVC(title: 'Devices', Signup: false, onClose: () {})),
-      Pair("Profile", ProfileVC(title: 'Profile', Signup: false, onClose: () {
-        widget.onClose();
-      }))
+      Pair("Devices", const DevicesVC()),
+      Pair("Account", const SettingsVC())
     ];
     if (_routeTo == 2) {
       // Navigator.push(
@@ -62,7 +59,7 @@ class _TabBarVCState extends State<TabBarVC> with SingleTickerProviderStateMixin
     setState(() {
       switch (pageTo) {
         case 0:
-          this.titleText = "My Home";
+          this.titleText = "Home";
           break;
         case 1:
           this.titleText = "Feeds";
@@ -74,7 +71,7 @@ class _TabBarVCState extends State<TabBarVC> with SingleTickerProviderStateMixin
           this.titleText = "Devices";
           break;
         case 4:
-          this.titleText = "Profile";
+          this.titleText = "Account";
           break;
         default:
       }
@@ -89,7 +86,14 @@ class _TabBarVCState extends State<TabBarVC> with SingleTickerProviderStateMixin
           appBar: new AppBar(
             centerTitle: true,
             automaticallyImplyLeading: false,
-            leading: Container(
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProfileVC(title: 'Profile', onClose: () {widget.onClose();}, Signup: false),fullscreenDialog: true),
+                );
+              },
               child: Container(
                 padding: EdgeInsets.all(10),
                 width: 20,
@@ -106,27 +110,16 @@ class _TabBarVCState extends State<TabBarVC> with SingleTickerProviderStateMixin
               ),
             ),
             title: Text(titleText, textAlign: TextAlign.center),
-            actions: _routeTo == 4 ? [
-            IconButton(
-              icon: const Icon(Icons.logout),
-              tooltip: 'Logout',
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut().then((value) {
-                  widget.onClose();
-                  Navigator.pop(context);
-                });
-              },
-            ),] : [
-              IconButton(
-                icon: const Icon(Icons.refresh),
-                tooltip: 'Refresh',
-                onPressed: () async {
-                  await FirebaseAuth.instance.signOut().then((value) {
-                    Navigator.pop(context);
-                  });
-                },
-              ),
-            ],
+            actions: _routeTo == 4 ? []
+                : [
+                    IconButton(
+                      icon: const Icon(Icons.refresh),
+                      tooltip: 'Refresh',
+                      onPressed: () async {
+
+                      },
+                    ),
+                  ],
           ),
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
@@ -137,7 +130,8 @@ class _TabBarVCState extends State<TabBarVC> with SingleTickerProviderStateMixin
               BottomNavigationBarItem(
                   icon: const Icon(Icons.home_rounded),
                   label: itemsIn[0].title,
-                  activeIcon: const Icon(Icons.home_rounded, color: Colors.blue)),
+                  activeIcon:
+                      const Icon(Icons.home_rounded, color: Colors.blue)),
               BottomNavigationBarItem(
                   icon: const Icon(Icons.feed),
                   label: itemsIn[1].title,
@@ -151,9 +145,10 @@ class _TabBarVCState extends State<TabBarVC> with SingleTickerProviderStateMixin
                   label: itemsIn[3].title,
                   activeIcon: const Icon(Icons.gas_meter, color: Colors.blue)),
               BottomNavigationBarItem(
-                  icon: const Icon(Icons.person_2_rounded),
+                  icon: const Icon(Icons.account_circle),
                   label: itemsIn[4].title,
-                  activeIcon: const Icon(Icons.person_2_rounded, color: Colors.blue)),
+                  activeIcon:
+                      const Icon(Icons.account_circle, color: Colors.blue)),
             ],
           ),
           body: itemsIn[_routeTo].obj as Widget,
