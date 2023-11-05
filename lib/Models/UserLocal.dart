@@ -2,9 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-import '../Models/User.dart';
 
-class User {
+class UserLocal {
   String name;
   String email;
   String countryCode;
@@ -12,7 +11,7 @@ class User {
   String profilePictureUrl;
   DateTime creationDate;
 
-  User(this.name,
+  UserLocal(this.name,
       this.email,
       this.countryCode,
       this.phoneNumber,

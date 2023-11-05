@@ -1,6 +1,6 @@
+import 'package:diabetes/Models/UserLocal.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../Models/User.dart';
 
 
 class Utility {
@@ -56,8 +56,8 @@ class Utility {
     this.prefs?.setStringList("userData", arrayString).whenComplete((){});
   }
 
-  User getUserData() {
+  UserLocal getUserData() {
     List<String>? data = this.prefs?.getStringList('userData') as List<String>?;
-    return User(data?[0] ?? '', data?[1] ?? '', data?[2] ?? '', data?[3] ?? '', data?[4] ?? '', (data?[5] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd – hh:mm:ss').parse(data?[5] ?? '') : DateTime.now());
+    return UserLocal(data?[0] ?? '', data?[1] ?? '', data?[2] ?? '', data?[3] ?? '', data?[4] ?? '', (data?[5] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd – hh:mm:ss').parse(data?[5] ?? '') : DateTime.now());
   }
 }

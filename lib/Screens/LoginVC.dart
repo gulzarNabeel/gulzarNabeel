@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:diabetes/Models/User.dart';
-import 'package:diabetes/Screens/HomeVC.dart';
+import 'package:diabetes/Models/UserLocal.dart';
+import 'package:diabetes/Screens/TabBarVC.dart';
 import 'package:diabetes/Screens/ProfileVC.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:diabetes/Usables/Utility.dart';
@@ -155,7 +155,7 @@ class _LoginPageState extends State<LoginVC> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => HomeVC(onClose: (){
+                builder: (context) => TabBarVC(onClose: (){
                   textFieldPhone.textFieldIn.controller?.text = '';
                   print('Reached here');
                 }),

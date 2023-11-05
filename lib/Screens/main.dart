@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:diabetes/Screens/HomeVC.dart';
+import 'package:diabetes/Screens/TabBarVC.dart';
 import 'package:diabetes/Screens/ProfileVC.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
             Utility().saveUserData(data);
             if (data["name"].toString().length > 0) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeVC(onClose:(){timerEvent();}),fullscreenDialog: true));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => TabBarVC(onClose:(){timerEvent();}),fullscreenDialog: true));
             }else{
             Navigator.push(
               context,

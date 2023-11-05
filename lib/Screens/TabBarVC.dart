@@ -7,13 +7,13 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
-class HomeVC extends StatefulWidget {
+class TabBarVC extends StatefulWidget {
   final VoidCallback onClose;
 
-  const HomeVC({super.key, required this.onClose});
+  const TabBarVC({super.key, required this.onClose});
 
   @override
-  _HomeVCState createState() => new _HomeVCState();
+  _TabBarVCState createState() => new _TabBarVCState();
 }
 
 class Pair<String, Object> {
@@ -23,7 +23,7 @@ class Pair<String, Object> {
   Pair(this.title, this.obj);
 }
 
-class _HomeVCState extends State<HomeVC> with SingleTickerProviderStateMixin {
+class _TabBarVCState extends State<TabBarVC> with SingleTickerProviderStateMixin {
   String titleText = "My Sessions";
   List<Pair> itemsIn = [
     Pair("Home", ProfileVC(title: 'Home', Signup: false, onClose: () {})),
