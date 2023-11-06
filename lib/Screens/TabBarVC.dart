@@ -42,7 +42,10 @@ class _TabBarVCState extends State<TabBarVC>
       Pair("", const MedicineVC()),
       Pair("", null),
       Pair("", const DevicesVC()),
-      Pair("", AccountVC(onClose: (){widget.onClose();}))
+      Pair("", AccountVC(onClose: (){
+        if (FirebaseAuth.instance.currentUser == null) {
+          widget.onClose();
+        }}))
     ];
     if (_routeTo == 2) {
 
@@ -89,7 +92,9 @@ class _TabBarVCState extends State<TabBarVC>
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ProfileVC(title: 'Profile', onClose: () {widget.onClose();}, Signup: false),fullscreenDialog: true),
+                      builder: (context) => ProfileVC(title: 'Profile', onClose: () {if (FirebaseAuth.instance.currentUser == null) {
+                        widget.onClose();
+                      }}, Signup: false),fullscreenDialog: true),
                 );
               },
               child: Container(

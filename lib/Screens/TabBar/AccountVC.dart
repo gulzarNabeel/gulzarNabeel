@@ -1,5 +1,6 @@
 import 'package:diabetes/Screens/ProfileVC.dart';
 import 'package:diabetes/Usables/Utility.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AccountVC extends StatefulWidget {
@@ -11,15 +12,24 @@ class AccountVC extends StatefulWidget {
 
 class _AccountVCState extends State<AccountVC> {
   @override
-  void initState() {}
+  void initState() {
+  }
 
   Widget listHeader(BuildContext context, int index) {
+    print(Utility().getUserData().profilePictureUrl);
     return GestureDetector(
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ProfileVC(title: 'Profile', onClose: () {widget.onClose();}, Signup: false),fullscreenDialog: true),
+                builder: (context) => ProfileVC(title: 'Profile', onClose: () {
+                      setState(() {
+                        if (FirebaseAuth.instance.currentUser == null) {
+                          widget.onClose();
+                        }
+                      });
+                      initState();
+                      }, Signup: false),fullscreenDialog: true),
           );
         },
         child: Container(

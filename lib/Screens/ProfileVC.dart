@@ -494,6 +494,7 @@ class _ProfilePageState extends State<ProfileVC> {
                               }),
                           fullscreenDialog: true));
                 } else {
+                  widget.onClose();
                   Navigator.pop(context);
                 }
               });
