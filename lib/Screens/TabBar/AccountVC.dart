@@ -5,31 +5,36 @@ import 'package:flutter/material.dart';
 
 class AccountVC extends StatefulWidget {
   const AccountVC({super.key, required this.onClose});
+
   final VoidCallback onClose;
+
   @override
   State<AccountVC> createState() => _AccountVCState();
 }
 
 class _AccountVCState extends State<AccountVC> {
+  List<String> arrayOptions = ['Personal Details', 'Reading Settings', 'Reminders', 'Help', 'About Diab-Gulzar', 'Delete Account', 'Logout'];
   @override
-  void initState() {
-  }
+  void initState() {}
 
   Widget listHeader(BuildContext context, int index) {
-    print(Utility().getUserData().profilePictureUrl);
     return GestureDetector(
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ProfileVC(title: 'Profile', onClose: () {
+                builder: (context) => ProfileVC(
+                    title: 'Profile',
+                    onClose: () {
                       setState(() {
                         if (FirebaseAuth.instance.currentUser == null) {
                           widget.onClose();
                         }
                       });
                       initState();
-                      }, Signup: false),fullscreenDialog: true),
+                    },
+                    Signup: false),
+                fullscreenDialog: true),
           );
         },
         child: Container(
@@ -63,7 +68,7 @@ class _AccountVCState extends State<AccountVC> {
                             child: Text('${Utility().getUserData().name}',
                                 style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: 25)), // default is 1
+                                    fontSize: 22)), // default is 1
                           ),
                         ],
                       ),
@@ -78,12 +83,12 @@ class _AccountVCState extends State<AccountVC> {
               )
             ],
           ),
-        )
-    );
+        ));
   }
 
   Widget listItem(BuildContext context, int index) {
-    return Card(
+    return Container(
+      height: 80,
       child: Row(
         children: <Widget>[
           Container(margin: EdgeInsets.all(10), child: Text('${index}')),
@@ -92,7 +97,7 @@ class _AccountVCState extends State<AccountVC> {
             width: 1,
             color: Colors.blue,
           ),
-          Container(margin: EdgeInsets.all(10), child: Text("asdasd"))
+          Container(margin: EdgeInsets.all(10), child: Text(arrayOptions[index - 1]))
         ],
       ),
     );
@@ -106,7 +111,7 @@ class _AccountVCState extends State<AccountVC> {
         body: ListView.builder(
             padding: EdgeInsets.all(0.0),
             shrinkWrap: false,
-            itemCount: 7,
+            itemCount: arrayOptions.length + 1,
             itemBuilder: (BuildContext context, int index) {
               if (index == 0) {
                 return listHeader(context, index);

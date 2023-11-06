@@ -157,7 +157,6 @@ class _LoginPageState extends State<LoginVC> {
             MaterialPageRoute(
                 builder: (context) => TabBarVC(onClose: (){
                   textFieldPhone.textFieldIn.controller?.text = '';
-                  print('Reached here');
                 }),
                 fullscreenDialog: true),
           );
@@ -167,7 +166,6 @@ class _LoginPageState extends State<LoginVC> {
             MaterialPageRoute(
                 builder: (context) => ProfileVC(title: 'Flutter Profile Page', Signup: true, onClose: () {
                     textFieldPhone.textFieldIn.controller?.text = '';
-                    print('Reached here');
                 }),
                 fullscreenDialog: true),
           );

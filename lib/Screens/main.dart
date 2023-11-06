@@ -52,7 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
   timerEvent() {
     Timer.periodic(const Duration(seconds: 3), (timer) async {
       timer.cancel();
-      print('timer finished');
       FirebaseAuth auth = FirebaseAuth.instance;
       if (auth.currentUser != null) {
         CollectionReference users = FirebaseFirestore.instance.collection('Users');
