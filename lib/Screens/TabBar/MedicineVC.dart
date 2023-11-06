@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 
-class SettingsVC extends StatefulWidget {
-  const SettingsVC({super.key});
+class MedicineVC extends StatefulWidget {
+  const MedicineVC({super.key});
   @override
-  State<SettingsVC> createState() => _SettingsVCState();
+  State<MedicineVC> createState() => _MedicineVCState();
 }
 
-class _SettingsVCState extends State<SettingsVC> {
+class _MedicineVCState extends State<MedicineVC> {
   @override
   void initState() {
 

@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:ffi';
 import 'package:diabetes/Screens/TabBar/DevicesVC.dart';
 import 'package:diabetes/Screens/ProfileVC.dart';
-import 'package:diabetes/Screens/TabBar/FeedsVC.dart';
+import 'package:diabetes/Screens/TabBar/MedicineVC.dart';
 import 'package:diabetes/Screens/TabBar/HomeVC.dart';
-import 'package:diabetes/Screens/TabBar/SettingsVC.dart';
+import 'package:diabetes/Screens/TabBar/AccountVC.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
@@ -38,17 +38,14 @@ class _TabBarVCState extends State<TabBarVC>
   @override
   void initState() {
     itemsIn = [
-      Pair("Home", const HomeVC()),
-      Pair("Feeds", const FeedsVC()),
-      Pair("Add", ProfileVC(title: 'Add', Signup: false, onClose: () {})),
-      Pair("Devices", const DevicesVC()),
-      Pair("Account", const SettingsVC())
+      Pair("", const HomeVC()),
+      Pair("", const MedicineVC()),
+      Pair("", null),
+      Pair("", const DevicesVC()),
+      Pair("", AccountVC(onClose: (){widget.onClose();}))
     ];
     if (_routeTo == 2) {
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => retailer.ConnectRetailerScreen()));
+
     } else {
       routeToPage(_routeTo);
     }
@@ -62,10 +59,10 @@ class _TabBarVCState extends State<TabBarVC>
           this.titleText = "Home";
           break;
         case 1:
-          this.titleText = "Feeds";
+          this.titleText = "Medicines";
           break;
         case 2:
-          this.titleText = "Add";
+          this.titleText = "";
           break;
         case 3:
           this.titleText = "Devices";
@@ -84,9 +81,10 @@ class _TabBarVCState extends State<TabBarVC>
         onWillPop: () async => false,
         child: Scaffold(
           appBar: new AppBar(
+            elevation: _routeTo == 4 ? 0 : null,
             centerTitle: true,
             automaticallyImplyLeading: false,
-            leading: GestureDetector(
+            leading: _routeTo == 4 ? null : GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
@@ -121,6 +119,13 @@ class _TabBarVCState extends State<TabBarVC>
                     ),
                   ],
           ),
+          floatingActionButton: new FloatingActionButton(
+            onPressed: (){},
+            tooltip: 'Increment',
+            child: new Icon(Icons.add),
+            elevation: 0,
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             fixedColor: Colors.blue,
@@ -128,18 +133,18 @@ class _TabBarVCState extends State<TabBarVC>
             currentIndex: _routeTo,
             items: [
               BottomNavigationBarItem(
-                  icon: const Icon(Icons.home_rounded),
+                  icon: const Icon(Icons.home_filled),
                   label: itemsIn[0].title,
                   activeIcon:
-                      const Icon(Icons.home_rounded, color: Colors.blue)),
+                      const Icon(Icons.home_filled, color: Colors.blue)),
               BottomNavigationBarItem(
-                  icon: const Icon(Icons.feed),
+                  icon: const Icon(Icons.medical_information_sharp),
                   label: itemsIn[1].title,
-                  activeIcon: const Icon(Icons.feed, color: Colors.blue)),
+                  activeIcon: const Icon(Icons.medical_information_sharp, color: Colors.blue)),
               BottomNavigationBarItem(
-                  icon: const Icon(Icons.add),
+                  icon: const Icon(Icons.add_circle_outlined, color: Colors.blue, size: 0),
                   label: itemsIn[2].title,
-                  activeIcon: const Icon(Icons.add, color: Colors.blue)),
+                  activeIcon: const Icon(Icons.add_circle_outlined, color: Colors.blue, size: 0)),
               BottomNavigationBarItem(
                   icon: const Icon(Icons.gas_meter),
                   label: itemsIn[3].title,
@@ -151,7 +156,7 @@ class _TabBarVCState extends State<TabBarVC>
                       const Icon(Icons.account_circle, color: Colors.blue)),
             ],
           ),
-          body: itemsIn[_routeTo].obj as Widget,
+          body: _routeTo != 2 ? itemsIn[_routeTo].obj as Widget : null,
         ));
   }
 }
