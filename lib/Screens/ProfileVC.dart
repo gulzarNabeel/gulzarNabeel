@@ -91,7 +91,7 @@ class _ProfilePageState extends State<ProfileVC> {
       appBar: AppBar(
         title: const Text("Profile"),
         automaticallyImplyLeading: widget.Signup == true ? false : true,
-        actions: [
+        actions: widget.Signup == true ? [
           IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Logout',
@@ -102,7 +102,7 @@ class _ProfilePageState extends State<ProfileVC> {
               });
             },
           ),
-        ],
+        ] : [],
       ),
       body: SingleChildScrollView(
         child: Column(
