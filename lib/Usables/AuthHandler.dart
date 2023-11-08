@@ -96,7 +96,6 @@ class AuthHandler {
       print("Done\n\n\n$error");
     }, codeSent: (String verificationId, int? token) async {
       final result = await showAlertDialog(con, verificationId,YesButton,NoButton,(){
-        print('Returning In Result Onclose: ');
         onClose();
       });
       setState() {
@@ -118,24 +117,44 @@ class AuthHandler {
       FirebaseAuth auth = FirebaseAuth.instance;
       final credentials = PhoneAuthProvider.credential(
           verificationId: idVerification, smsCode: value);
-      try {
-        await auth.currentUser
-            ?.reauthenticateWithCredential(credentials)
-            .then((authResult) {
+      if (auth.currentUser == null){
+        try {
+          await auth.signInWithCredential(credentials).then((authResult) {
             onClose();
-        });
-      } catch (error) {
-        AlertDialogLocal(
-                'Failed',
-                generateExceptionMessage(handleException(error)),
-                'OK',
-                '',
-                () {},
-                () {},
-                false,
-                '',
-                false)
-            .showAlert(cont);
+          });
+        } catch (error) {
+          AlertDialogLocal(
+                  'Failed',
+                  generateExceptionMessage(handleException(error)),
+                  'OK',
+                  '',
+                  () {},
+                  () {},
+                  false,
+                  '',
+                  false)
+              .showAlert(cont);
+        }
+      }else {
+        try {
+          await auth.currentUser
+              ?.reauthenticateWithCredential(credentials)
+              .then((authResult) {
+            onClose();
+          });
+        } catch (error) {
+          AlertDialogLocal(
+              'Failed',
+              generateExceptionMessage(handleException(error)),
+              'OK',
+              '',
+                  () {},
+                  () {},
+              false,
+              '',
+              false)
+              .showAlert(cont);
+        }
       }
     }, (value) {}, true, 'OTP', true)
         .showAlert(cont);

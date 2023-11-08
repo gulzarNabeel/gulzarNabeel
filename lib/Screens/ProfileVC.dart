@@ -36,7 +36,7 @@ class ProfileVC extends StatefulWidget {
 class _ProfilePageState extends State<ProfileVC> {
   Country? _selectedCountry;
   Text? _countryText =
-      const Text("", style: TextStyle(color: Colors.blue, fontSize: 25));
+      const Text("", style: TextStyle(color: Colors.blue, fontSize: 20));
   CustomTextField textFieldPhone =
       CustomTextField('Phone Number', TextInputType.phone, false);
   CustomTextField textFieldName =
@@ -54,33 +54,49 @@ class _ProfilePageState extends State<ProfileVC> {
         initState();
       });
     }
-    initCountry();
+    if (_selectedCountry == null) {
+      initCountry();
+    }
   }
 
   void initCountry() async {
     var country = await getDefaultCountry(context);
     List<Country> countries = await getCountries(context);
     setState(() {
-      List<Country> filter = countries.where((element) {
-        return element.callingCode == Utility().getUserData().countryCode;
-      }).toList();
-      if (filter.length > 0) {
-        country = filter[0];
+      if (_selectedCountry == null) {
+        List<Country> filter = countries.where((element) {
+          return element.callingCode == Utility()
+              .getUserData()
+              .countryCode;
+        }).toList();
+        if (filter.length > 0) {
+          country = filter[0];
+        }
+        _selectedCountry = country;
+        if (Utility()
+            .getUserData()
+            .countryCode ==
+            _selectedCountry!.callingCode) {
+          _countryText = Text(_selectedCountry?.callingCode ?? "",
+              style: const TextStyle(color: Colors.blue, fontSize: 20));
+        } else {
+          _countryText = Text(Utility()
+              .getUserData()
+              .countryCode,
+              style: const TextStyle(color: Colors.blue, fontSize: 20));
+        }
+        textFieldPhone.textFieldIn.controller?.text =
+            Utility()
+                .getUserData()
+                .phoneNumber;
+        textFieldName.textFieldIn.controller?.text = Utility()
+            .getUserData()
+            .name;
+        textFieldEmail.textFieldIn.controller?.text =
+            Utility()
+                .getUserData()
+                .email;
       }
-      _selectedCountry = country;
-      if (Utility().getUserData().countryCode ==
-          _selectedCountry!.callingCode) {
-        _countryText = Text(_selectedCountry?.callingCode ?? "",
-            style: const TextStyle(color: Colors.blue, fontSize: 25));
-      } else {
-        _countryText = Text(Utility().getUserData().countryCode,
-            style: const TextStyle(color: Colors.blue, fontSize: 25));
-      }
-      textFieldPhone.textFieldIn.controller?.text =
-          Utility().getUserData().phoneNumber;
-      textFieldName.textFieldIn.controller?.text = Utility().getUserData().name;
-      textFieldEmail.textFieldIn.controller?.text =
-          Utility().getUserData().email;
     });
   }
 
@@ -160,8 +176,6 @@ class _ProfilePageState extends State<ProfileVC> {
                   onPressed: () {},
                   child: Container(
                     color: Colors.white.withOpacity(0),
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     child: _countryText,
                   ),
                 ),
@@ -185,7 +199,7 @@ class _ProfilePageState extends State<ProfileVC> {
                   Visibility(
                     visible:
                         !(FirebaseAuth.instance.currentUser?.emailVerified ??
-                            false),
+                            false) && (FirebaseAuth.instance.currentUser!.email == textFieldEmail.editController.text),
                     child: GestureDetector(
                         onTap: () {
                           FirebaseAuth.instance.currentUser
@@ -420,6 +434,7 @@ class _ProfilePageState extends State<ProfileVC> {
                   fullscreenDialog: true));
         });
       } else {
+        widget.onClose();
         Navigator.pop(context);
       }
     } else {
@@ -430,6 +445,7 @@ class _ProfilePageState extends State<ProfileVC> {
             .ref(destination)
             .child('ProfilePicture.${imageFile!.path.split('.').last}');
         await ref.putFile(imageFile!).then((p0) async {
+          print('Print here');
           await ref.getDownloadURL().then((value) {
             var currentUser = Utility().getUserData();
             FirebaseAuth auth = FirebaseAuth.instance;
@@ -451,6 +467,7 @@ class _ProfilePageState extends State<ProfileVC> {
                               }),
                           fullscreenDialog: true));
                 } else {
+                  print('Returning In Result');
                   widget.onClose();
                   Navigator.pop(context);
                 }
@@ -470,6 +487,8 @@ class _ProfilePageState extends State<ProfileVC> {
                   .showAlert(context);
             });
           });
+        }).catchError((value){
+          print(value);
         });
       } catch (e) {
         print('error occurred');

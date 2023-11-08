@@ -54,12 +54,12 @@ class _AccountVCState extends State<AccountVC> {
                 builder: (context) => ProfileVC(
                     title: 'Profile',
                     onClose: () {
+                      print('Returning In Result Onclose');
                       setState(() {
                         if (FirebaseAuth.instance.currentUser == null) {
                           widget.onClose();
                         }
                       });
-                      initState();
                     },
                     Signup: false),
                 fullscreenDialog: true),
