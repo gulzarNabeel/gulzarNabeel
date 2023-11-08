@@ -420,8 +420,8 @@ class _ProfilePageState extends State<ProfileVC> {
 
   Future uploadFile() async {
     if (imageFile == null) {
-      if (widget.Signup == true) {
-        Timer.periodic(const Duration(seconds: 3), (timer) {
+      Timer.periodic(const Duration(seconds: 3), (timer) {
+        if (widget.Signup == true) {
           timer.cancel();
           Navigator.push(
               context,
@@ -432,11 +432,11 @@ class _ProfilePageState extends State<ProfileVC> {
                         }
                       }),
                   fullscreenDialog: true));
-        });
-      } else {
-        widget.onClose();
-        Navigator.pop(context);
-      }
+        } else {
+          widget.onClose();
+          Navigator.pop(context);
+        }
+      });
     } else {
       final destination =
           (FirebaseAuth.instance.currentUser?.uid ?? 'ProfilePicture');

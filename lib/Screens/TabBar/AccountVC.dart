@@ -55,6 +55,7 @@ class _AccountVCState extends State<AccountVC> {
                     title: 'Profile',
                     onClose: () {
                       print('Returning In Result Onclose');
+                      initState();
                       setState(() {
                         if (FirebaseAuth.instance.currentUser == null) {
                           widget.onClose();
