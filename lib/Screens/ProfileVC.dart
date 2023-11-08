@@ -13,7 +13,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
-import '../Usables/AuthExceptionHandler.dart';
+import '../Usables/AuthHandler.dart';
 import '../Usables/CustomTextField.dart';
 import '../Usables/Utility.dart';
 
@@ -219,7 +219,7 @@ class _ProfilePageState extends State<ProfileVC> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton(
                 onPressed: () {
-                  updateProfile(context);
+                  updateProfile();
                 },
                 child: const Text('Update',
                     style: TextStyle(color: Colors.white, fontSize: 20)),
@@ -231,7 +231,7 @@ class _ProfilePageState extends State<ProfileVC> {
     );
   }
 
-  updateProfile(BuildContext context) async {
+  updateProfile() async {
     if ((textFieldEmail.textFieldIn.controller?.text ?? '') ==
             Utility().getUserData().email &&
         (textFieldName.textFieldIn.controller?.text ?? '') ==
@@ -281,29 +281,15 @@ class _ProfilePageState extends State<ProfileVC> {
                 false)
             .showAlert(context);
       } else {
-        // Return false because email adress is not in use
-        FirebaseAuth auth = FirebaseAuth.instance;
-        auth.verifyPhoneNumber(
-            phoneNumber: Utility().getUserData().countryCode +
-                Utility().getUserData().phoneNumber,
-            verificationCompleted: (_) {
-              print("Done\n\n\n\nverificationCompleted");
-            },
-            verificationFailed: (error) {
-              print("Done\n\n\n$error");
-            },
-            codeSent: (String verificationId, int? token) async {
-              await showAlertDialog(context, verificationId);
-            },
-            codeAutoRetrievalTimeout: (_) {
-              print("Done\n\n\n\ncodeAutoRetrievalTimeout");
-            });
+        AuthHandler().sendOTP(context, Utility().getUserData().countryCode, Utility().getUserData().phoneNumber, 'Update', 'Cancel', (){
+          showAlertDialog();
+        });
       }
     } catch (error) {
       AlertDialogLocal(
               'Alert',
-              AuthExceptionHandler.generateExceptionMessage(
-                  AuthExceptionHandler.handleException(error)),
+              AuthHandler.generateExceptionMessage(
+                  AuthHandler.handleException(error)),
               'OK',
               '',
               () {},
@@ -315,103 +301,74 @@ class _ProfilePageState extends State<ProfileVC> {
     }
   }
 
-  showAlertDialog(BuildContext cont, String idVerification) async {
-    // set up the buttons
-    AlertDialogLocal(
-            'OTP Verification',
-            'Please enter your OTP received in your phone',
-            'Update',
-            'Cancel', (String value) async {
-      FirebaseAuth auth = FirebaseAuth.instance;
-      final credentials = PhoneAuthProvider.credential(
-          verificationId: idVerification, smsCode: value);
-      try {
-        await auth.currentUser
-            ?.reauthenticateWithCredential(credentials)
-            .then((authResult) {
-          var currentUser = Utility().getUserData();
-          if (currentUser.name !=
-              (textFieldName.textFieldIn.controller?.text ?? '')) {
-            auth.currentUser
-                ?.updateDisplayName(
-                    textFieldName.textFieldIn.controller?.text ?? '')
-                .then((value) {
-              currentUser.name =
-                  (textFieldName.textFieldIn.controller?.text ?? '');
-              currentUser.updateData();
-              if (currentUser.email !=
-                  (textFieldEmail.textFieldIn.controller?.text ?? '')) {
-                auth.currentUser
-                    ?.updateEmail(
-                        textFieldEmail.textFieldIn.controller?.text ?? '')
-                    .then((value) {
-                  currentUser.email =
-                      (textFieldEmail.textFieldIn.controller?.text ?? '');
-                  currentUser.updateData();
-                  uploadFile();
-                }).catchError((error) {
-                  textFieldEmail.textFieldIn.controller?.text = '';
-                  AlertDialogLocal(
-                          "Failure",
-                          AuthExceptionHandler.generateExceptionMessage(
-                              AuthExceptionHandler.handleException(error)),
-                          'OK',
-                          '',
-                          () {},
-                          () {},
-                          false,
-                          '',
-                          false)
-                      .showAlert(cont);
-                });
-              } else {
-                uploadFile();
-              }
-            });
-          } else if (currentUser.email !=
-              (textFieldEmail.textFieldIn.controller?.text ?? '')) {
-            auth.currentUser
-                ?.updateEmail(textFieldEmail.textFieldIn.controller?.text ?? '')
-                .then((value) {
-              currentUser.email =
-                  (textFieldEmail.textFieldIn.controller?.text ?? '');
-              currentUser.updateData();
-              uploadFile();
-            }).catchError((error) {
-              textFieldEmail.textFieldIn.controller?.text = '';
-              AlertDialogLocal(
-                      "Failure",
-                      AuthExceptionHandler.generateExceptionMessage(
-                          AuthExceptionHandler.handleException(error)),
-                      'OK',
-                      '',
-                      () {},
-                      () {},
-                      false,
-                      '',
-                      false)
-                  .showAlert(cont);
-            });
-          } else {
+  showAlertDialog() async {
+    var currentUser = Utility().getUserData();
+    FirebaseAuth auth = FirebaseAuth.instance;
+    if (currentUser.name !=
+        (textFieldName.textFieldIn.controller?.text ?? '')) {
+      auth.currentUser
+          ?.updateDisplayName(
+          textFieldName.textFieldIn.controller?.text ?? '')
+          .then((value) {
+        currentUser.name =
+        (textFieldName.textFieldIn.controller?.text ?? '');
+        currentUser.updateData();
+        if (currentUser.email !=
+            (textFieldEmail.textFieldIn.controller?.text ?? '')) {
+          auth.currentUser
+              ?.updateEmail(
+              textFieldEmail.textFieldIn.controller?.text ?? '')
+              .then((value) {
+            currentUser.email =
+            (textFieldEmail.textFieldIn.controller?.text ?? '');
+            currentUser.updateData();
             uploadFile();
-          }
-        });
-      } catch (error) {
-        AlertDialogLocal(
-                'Failed',
-                AuthExceptionHandler.generateExceptionMessage(
-                    AuthExceptionHandler.handleException(error)),
+          }).catchError((error) {
+            textFieldEmail.textFieldIn.controller?.text = '';
+            AlertDialogLocal(
+                "Failure",
+                AuthHandler.generateExceptionMessage(
+                    AuthHandler.handleException(error)),
                 'OK',
                 '',
-                () {},
-                () {},
+                    () {},
+                    () {},
                 false,
                 '',
                 false)
-            .showAlert(cont);
-      }
-    }, (value) {}, true, 'OTP', true)
-        .showAlert(cont);
+                .showAlert(context);
+          });
+        } else {
+          uploadFile();
+        }
+      });
+    } else if (currentUser.email !=
+        (textFieldEmail.textFieldIn.controller?.text ?? '')) {
+      auth.currentUser
+          ?.updateEmail(textFieldEmail.textFieldIn.controller?.text ?? '')
+          .then((value) {
+        currentUser.email =
+        (textFieldEmail.textFieldIn.controller?.text ?? '');
+        currentUser.updateData();
+        uploadFile();
+      }).catchError((error) {
+        textFieldEmail.textFieldIn.controller?.text = '';
+        AlertDialogLocal(
+            "Failure",
+            AuthHandler.generateExceptionMessage(
+                AuthHandler.handleException(error)),
+            'OK',
+            '',
+                () {},
+                () {},
+            false,
+            '',
+            false)
+            .showAlert(context);
+      });
+    } else {
+      uploadFile();
+    }
   }
 
   /// Get from gallery
@@ -501,8 +458,8 @@ class _ProfilePageState extends State<ProfileVC> {
             }).catchError((error) {
               AlertDialogLocal(
                       "Failure",
-                      AuthExceptionHandler.generateExceptionMessage(
-                          AuthExceptionHandler.handleException(error)),
+                      AuthHandler.generateExceptionMessage(
+                          AuthHandler.handleException(error)),
                       'OK',
                       '',
                       () {},

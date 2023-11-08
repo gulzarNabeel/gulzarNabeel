@@ -1,3 +1,7 @@
+import 'package:diabetes/Usables/AlertDialogLocal.dart';
+import 'package:diabetes/Usables/Utility.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 
 enum AuthResultStatus {
   successful,
@@ -11,7 +15,7 @@ enum AuthResultStatus {
   undefined,
 }
 
-class AuthExceptionHandler {
+class AuthHandler {
   static handleException(e) {
     var status;
     switch (e.code) {
@@ -75,12 +79,65 @@ class AuthExceptionHandler {
         break;
       case AuthResultStatus.emailAlreadyExists:
         errorMessage =
-        "The email has already been used. Please use alternative email.";
+            "The email has already been used. Please use alternative email.";
         break;
       default:
         errorMessage = "An undefined Error happened.";
     }
 
     return errorMessage;
+  }
+
+  sendOTP(BuildContext con, String countryCodeIn,String phoneNumber, String YesButton, String NoButton, Function onClose) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    auth.verifyPhoneNumber(phoneNumber: countryCodeIn+phoneNumber,verificationCompleted: (_){
+      print("Done\n\n\n\nverificationCompleted");
+    }, verificationFailed: (error){
+      print("Done\n\n\n$error");
+    }, codeSent: (String verificationId, int? token) async {
+      final result = await showAlertDialog(con, verificationId,YesButton,NoButton,(){
+        print('Returning In Result Onclose: ');
+        onClose();
+      });
+      setState() {
+        print('Returning In Result:' + result.toString());
+      }
+    }, codeAutoRetrievalTimeout: (_){
+      print("Done\n\n\n\ncodeAutoRetrievalTimeout");
+    });
+    // return result;
+  }
+
+  showAlertDialog(BuildContext cont, String idVerification, String YesButton, String NoButton, Function onClose) async {
+    // set up the buttons
+    AlertDialogLocal(
+            'OTP Verification',
+            'Please enter your OTP received in your phone',
+            YesButton,
+            NoButton, (String value) async {
+      FirebaseAuth auth = FirebaseAuth.instance;
+      final credentials = PhoneAuthProvider.credential(
+          verificationId: idVerification, smsCode: value);
+      try {
+        await auth.currentUser
+            ?.reauthenticateWithCredential(credentials)
+            .then((authResult) {
+            onClose();
+        });
+      } catch (error) {
+        AlertDialogLocal(
+                'Failed',
+                generateExceptionMessage(handleException(error)),
+                'OK',
+                '',
+                () {},
+                () {},
+                false,
+                '',
+                false)
+            .showAlert(cont);
+      }
+    }, (value) {}, true, 'OTP', true)
+        .showAlert(cont);
   }
 }

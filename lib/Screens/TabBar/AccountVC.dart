@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diabetes/Screens/ProfileVC.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
+import 'package:diabetes/Usables/AuthHandler.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -93,8 +95,7 @@ class _AccountVCState extends State<AccountVC> {
                           Expanded(
                             child: Text('${Utility().getUserData().name}',
                                 style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 22)), // default is 1
+                                    color: Colors.white, fontSize: 22)), // default is 1
                           ),
                         ],
                       ),
@@ -123,6 +124,21 @@ class _AccountVCState extends State<AccountVC> {
                 });
               }, (){}, false, '', true).showAlert(context);
               break;
+            case OptionAccount.DeleteAccount:
+              AlertDialogLocal("Delete Account", 'Are you sure to Delete account?\n\n\nNote:Account can not be recovered once it is deleted', 'Yes', 'No', () async {
+                AuthHandler().sendOTP(context, Utility().getUserData().countryCode, Utility().getUserData().phoneNumber, 'Delete', 'Keep Account', (){
+                  CollectionReference users = FirebaseFirestore.instance.collection('Users');
+                  FirebaseAuth auth = FirebaseAuth.instance;
+                  users.doc(auth.currentUser?.uid).delete().then((value) async {
+                    await FirebaseAuth.instance.currentUser?.delete().then((value) {
+                      widget.onClose();
+                    }).catchError((error) {
+                      AuthHandler.generateExceptionMessage(AuthHandler.handleException(error));
+                    });
+                  });
+                });
+              }, (){}, false, '', true).showAlert(context);
+              break;
           }
         },
         child: Container(
@@ -130,7 +146,12 @@ class _AccountVCState extends State<AccountVC> {
           child: Row(
             children: <Widget>[
               Container(margin: EdgeInsets.all(10), child: arrayOptions[index - 1].obj),
-              Container(margin: EdgeInsets.all(10), child: arrayOptions[index - 1].title)
+              SizedBox(
+                  width: 300,
+                  child: Container(
+                      margin: EdgeInsets.all(10), child: arrayOptions[index - 1].title
+                  )
+              )
             ],
           ),
         )

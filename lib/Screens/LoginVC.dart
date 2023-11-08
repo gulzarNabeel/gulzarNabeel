@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:country_calling_code_picker/picker.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../Usables/AuthExceptionHandler.dart';
+import '../Usables/AuthHandler.dart';
 import '../Usables/CustomTextField.dart';
 
 class LoginVC extends StatefulWidget {
@@ -109,39 +109,9 @@ class _LoginPageState extends State<LoginVC> {
   }
 
   sendOTP(BuildContext con, String countryCodeIn,String phoneNumber) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    auth.verifyPhoneNumber(phoneNumber: countryCodeIn+phoneNumber,verificationCompleted: (_){
-      print("Done\n\n\n\nverificationCompleted");
-    }, verificationFailed: (error){
-      print("Done\n\n\n$error");
-    }, codeSent: (String verificationId, int? token) async {
-      final result = await showAlertDialog(con, countryCodeIn,phoneNumber, verificationId);
-      setState() {
-        print(result);
-      }
-    }, codeAutoRetrievalTimeout: (_){
-      print("Done\n\n\n\ncodeAutoRetrievalTimeout");
+    AuthHandler().sendOTP(con, countryCodeIn, phoneNumber, 'Login', 'Cancel', (){
+      getFirestoreData(con,countryCodeIn,phoneNumber);
     });
-    // return result;
-  }
-
-  showAlertDialog(BuildContext cont,String countryCode, String phone,String idVerification) async {
-    // set up the buttons
-    AlertDialogLocal('OTP Verification', 'Please enter your OTP received in your phone', 'Login', 'Cancel', (String value) async {
-      FirebaseAuth auth = FirebaseAuth.instance;
-      final credentials = PhoneAuthProvider.credential(
-          verificationId: idVerification,
-          smsCode: value);
-      try {
-        await auth.signInWithCredential(credentials).then((authResult) {
-          getFirestoreData(cont,countryCode,phone);
-        });
-      } catch (error) {
-        AlertDialogLocal('Failed', AuthExceptionHandler.generateExceptionMessage(AuthExceptionHandler.handleException(error)), 'OK', '',(){},(){}, false, '', false).showAlert(cont);
-      }
-    }, (value){
-
-    }, true, 'OTP', true).showAlert(cont);
   }
 
   getFirestoreData(BuildContext context, String countryCode, String phone){
