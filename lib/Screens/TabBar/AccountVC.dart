@@ -74,7 +74,6 @@ class _AccountVCState extends State<AccountVC> {
                 builder: (context) => ProfileVC(
                     title: 'Profile',
                     onClose: () {
-                      print('Returning In Result Onclose');
                       initState();
                       setState(() {
                         if (FirebaseAuth.instance.currentUser == null) {
@@ -147,7 +146,7 @@ class _AccountVCState extends State<AccountVC> {
             case OptionAccount.Help:
               break;
             case OptionAccount.AboutUs:
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => AboutUsVC()));
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => AboutUsVC(title: 'About Diab-Gulzar',)));
               break;
             case OptionAccount.Logout:
               AlertDialogLocal("Logout", 'Are you sure to logout from account?',

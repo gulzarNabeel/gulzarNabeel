@@ -157,7 +157,8 @@ class _ProfilePageState extends State<ProfileVC> {
                                 : Image(
                                     image: AssetImage('Assets/appicon.png')),
                       ),
-                    )),
+                    )
+                ),
               ),
             ),
             //Name Text Portion
