@@ -3,19 +3,20 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_calling_code_picker/picker.dart';
 import 'package:diabetes/Models/UserLocal.dart';
-import 'package:diabetes/Screens/TabBarVC.dart';
+import 'package:diabetes/Screens/TabBar/TabBarVC.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:diabetes/Usables/DisplayPictureScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
-import '../Usables/AuthHandler.dart';
-import '../Usables/CustomTextField.dart';
-import '../Usables/Utility.dart';
+import '../../Usables/AuthHandler.dart';
+import '../../Usables/CustomTextField.dart';
+import '../../Usables/Utility.dart';
 
 class ProfileVC extends StatefulWidget {
   final VoidCallback onClose;
@@ -425,13 +426,12 @@ class _ProfilePageState extends State<ProfileVC> {
           timer.cancel();
           Navigator.push(
               context,
-              MaterialPageRoute(
+              CupertinoPageRoute(
                   builder: (context) => TabBarVC(onClose: () {
                         if (FirebaseAuth.instance.currentUser == null) {
                           widget.onClose();
                         }
-                      }),
-                  fullscreenDialog: true));
+                      })));
         } else {
           widget.onClose();
           Navigator.pop(context);
@@ -459,13 +459,12 @@ class _ProfilePageState extends State<ProfileVC> {
                 if (widget.Signup == true) {
                   Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      CupertinoPageRoute(
                           builder: (context) => TabBarVC(onClose: () {
                                 if (FirebaseAuth.instance.currentUser == null) {
                                   widget.onClose();
                                 }
-                              }),
-                          fullscreenDialog: true));
+                              })));
                 } else {
                   print('Returning In Result');
                   widget.onClose();

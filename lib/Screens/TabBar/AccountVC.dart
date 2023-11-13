@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:diabetes/Screens/ProfileVC.dart';
+import 'package:diabetes/Screens/Profile/AboutUsVC.dart';
+import 'package:diabetes/Screens/Profile/ProfileVC.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:diabetes/Usables/AuthHandler.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AccountVC extends StatefulWidget {
@@ -33,15 +35,33 @@ class PairTab<Text, Icon, OptionAccount> {
   PairTab(this.title, this.obj, this.option);
 }
 
-
 class _AccountVCState extends State<AccountVC> {
-  List<PairTab> arrayOptions = [PairTab(const Text('Personal Details',style: TextStyle(color: Colors.black87)),const  Icon(Icons.person_add_alt_1,color: Colors.black87), OptionAccount.PersonalDetails),
-                                PairTab(const Text('Reading Settings',style: TextStyle(color: Colors.black87)),const Icon(Icons.settings,color: Colors.black87), OptionAccount.ReadingSettings),
-                                PairTab(const Text('Reminders',style: TextStyle(color: Colors.black87)),const Icon(Icons.alarm_add,color: Colors.black87), OptionAccount.Reminders),
-                                PairTab(const Text('Help',style: TextStyle(color: Colors.black87)),const Icon(Icons.help,color: Colors.black87), OptionAccount.Help),
-                                PairTab(const Text('About Diab-Gulzar',style: TextStyle(color: Colors.black87)),const Icon(Icons.home_work,color: Colors.black87), OptionAccount.AboutUs),
-                                PairTab(const Text('Logout',style: TextStyle(color: Colors.grey)), const Icon(Icons.logout,color: Colors.grey), OptionAccount.Logout),
-                                PairTab(Text('Delete Account',style: TextStyle(color: Colors.red[300])), Icon(Icons.delete,color: Colors.red[300]), OptionAccount.DeleteAccount)];
+  List<PairTab> arrayOptions = [
+    PairTab(
+        const Text('Personal Details', style: TextStyle(color: Colors.black87)),
+        const Icon(Icons.person_add_alt_1, color: Colors.black87),
+        OptionAccount.PersonalDetails),
+    PairTab(
+        const Text('Reading Settings', style: TextStyle(color: Colors.black87)),
+        const Icon(Icons.settings, color: Colors.black87),
+        OptionAccount.ReadingSettings),
+    PairTab(
+        const Text('Reminders', style: TextStyle(color: Colors.black87)),
+        const Icon(Icons.alarm_add, color: Colors.black87),
+        OptionAccount.Reminders),
+    PairTab(const Text('Help', style: TextStyle(color: Colors.black87)),
+        const Icon(Icons.help, color: Colors.black87), OptionAccount.Help),
+    PairTab(
+        const Text('About Diab-Gulzar',
+            style: TextStyle(color: Colors.black87)),
+        const Icon(Icons.home_work, color: Colors.black87),
+        OptionAccount.AboutUs),
+    PairTab(const Text('Logout', style: TextStyle(color: Colors.grey)),
+        const Icon(Icons.logout, color: Colors.grey), OptionAccount.Logout),
+    PairTab(Text('Delete Account', style: TextStyle(color: Colors.red[300])),
+        Icon(Icons.delete, color: Colors.red[300]), OptionAccount.DeleteAccount)
+  ];
+
   @override
   void initState() {}
 
@@ -50,7 +70,7 @@ class _AccountVCState extends State<AccountVC> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
+            CupertinoPageRoute(
                 builder: (context) => ProfileVC(
                     title: 'Profile',
                     onClose: () {
@@ -62,8 +82,7 @@ class _AccountVCState extends State<AccountVC> {
                         }
                       });
                     },
-                    Signup: false),
-                fullscreenDialog: true),
+                    Signup: false)),
           );
         },
         child: Container(
@@ -96,7 +115,8 @@ class _AccountVCState extends State<AccountVC> {
                           Expanded(
                             child: Text('${Utility().getUserData().name}',
                                 style: const TextStyle(
-                                    color: Colors.white, fontSize: 22)), // default is 1
+                                    color: Colors.white,
+                                    fontSize: 22)), // default is 1
                           ),
                         ],
                       ),
@@ -117,28 +137,55 @@ class _AccountVCState extends State<AccountVC> {
   Widget listItem(BuildContext context, int index) {
     return GestureDetector(
         onTap: () {
-          switch(arrayOptions[index - 1].option) {
+          switch (arrayOptions[index - 1].option) {
+            case OptionAccount.PersonalDetails:
+              break;
+            case OptionAccount.ReadingSettings:
+              break;
+            case OptionAccount.Reminders:
+              break;
+            case OptionAccount.Help:
+              break;
+            case OptionAccount.AboutUs:
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => AboutUsVC()));
+              break;
             case OptionAccount.Logout:
-              AlertDialogLocal("Logout", 'Are you sure to logout from account?', 'Yes', 'No', () async {
+              AlertDialogLocal("Logout", 'Are you sure to logout from account?',
+                      'Yes', 'No', () async {
                 await FirebaseAuth.instance.signOut().then((value) {
                   widget.onClose();
                 });
-              }, (){}, false, '', true).showAlert(context);
+              }, () {}, false, '', true)
+                  .showAlert(context);
               break;
             case OptionAccount.DeleteAccount:
-              AlertDialogLocal("Delete Account", 'Are you sure to Delete account?\n\n\nNote:Account can not be recovered once it is deleted', 'Yes', 'No', () async {
-                AuthHandler().sendOTP(context, Utility().getUserData().countryCode, Utility().getUserData().phoneNumber, 'Delete', 'Keep Account', (){
-                  CollectionReference users = FirebaseFirestore.instance.collection('Users');
+              AlertDialogLocal(
+                      "Delete Account",
+                      'Are you sure to Delete account?\n\n\nNote:Account can not be recovered once it is deleted',
+                      'Yes',
+                      'No', () async {
+                AuthHandler().sendOTP(
+                    context,
+                    Utility().getUserData().countryCode,
+                    Utility().getUserData().phoneNumber,
+                    'Delete',
+                    'Keep Account', () {
+                  CollectionReference users =
+                      FirebaseFirestore.instance.collection('Users');
                   FirebaseAuth auth = FirebaseAuth.instance;
                   users.doc(auth.currentUser?.uid).delete().then((value) async {
-                    await FirebaseAuth.instance.currentUser?.delete().then((value) {
+                    await FirebaseAuth.instance.currentUser
+                        ?.delete()
+                        .then((value) {
                       widget.onClose();
                     }).catchError((error) {
-                      AuthHandler.generateExceptionMessage(AuthHandler.handleException(error));
+                      AuthHandler.generateExceptionMessage(
+                          AuthHandler.handleException(error));
                     });
                   });
                 });
-              }, (){}, false, '', true).showAlert(context);
+              }, () {}, false, '', true)
+                  .showAlert(context);
               break;
           }
         },
@@ -146,17 +193,17 @@ class _AccountVCState extends State<AccountVC> {
           height: 80,
           child: Row(
             children: <Widget>[
-              Container(margin: EdgeInsets.all(10), child: arrayOptions[index - 1].obj),
+              Container(
+                  margin: EdgeInsets.all(10),
+                  child: arrayOptions[index - 1].obj),
               SizedBox(
                   width: 300,
                   child: Container(
-                      margin: EdgeInsets.all(10), child: arrayOptions[index - 1].title
-                  )
-              )
+                      margin: EdgeInsets.all(10),
+                      child: arrayOptions[index - 1].title))
             ],
           ),
-        )
-    );
+        ));
   }
 
   @override

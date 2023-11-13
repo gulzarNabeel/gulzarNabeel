@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:ffi';
 import 'package:diabetes/Screens/TabBar/DevicesVC.dart';
-import 'package:diabetes/Screens/ProfileVC.dart';
+import 'package:diabetes/Screens/Profile/ProfileVC.dart';
 import 'package:diabetes/Screens/TabBar/MedicineVC.dart';
 import 'package:diabetes/Screens/TabBar/HomeVC.dart';
 import 'package:diabetes/Screens/TabBar/AccountVC.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -91,10 +92,10 @@ class _TabBarVCState extends State<TabBarVC>
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
+                  CupertinoPageRoute(
                       builder: (context) => ProfileVC(title: 'Profile', onClose: () {if (FirebaseAuth.instance.currentUser == null) {
                         widget.onClose();
-                      }}, Signup: false),fullscreenDialog: true),
+                      }}, Signup: false)),
                 );
               },
               child: Container(

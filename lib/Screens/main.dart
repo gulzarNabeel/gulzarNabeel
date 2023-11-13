@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:diabetes/Screens/TabBarVC.dart';
-import 'package:diabetes/Screens/ProfileVC.dart';
+import 'package:diabetes/Screens/TabBar/TabBarVC.dart';
+import 'package:diabetes/Screens/Profile/ProfileVC.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import '../firebase_options.dart';
-import 'package:diabetes/Screens/LoginVC.dart';
+import 'package:diabetes/Screens/Authentication/LoginVC.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -60,30 +61,27 @@ class _MyHomePageState extends State<MyHomePage> {
             Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
             Utility().saveUserData(data);
             if (data["name"].toString().length > 0) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => TabBarVC(onClose:(){timerEvent();}),fullscreenDialog: true));
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarVC(onClose:(){timerEvent();})));
             }else{
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => ProfileVC(title: 'Flutter Profile Page', onClose: () {timerEvent();}, Signup: true),fullscreenDialog: true),
-            );
+                CupertinoPageRoute(
+                  builder: (context) => ProfileVC(title: 'Flutter Profile Page', onClose: () {timerEvent();}, Signup: true)));
             }
           }else{
             auth.signOut();
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => LoginVC(title: 'Flutter Login Page'),
-                  fullscreenDialog: true),
+              CupertinoPageRoute(
+                  builder: (context) => LoginVC(title: 'Flutter Login Page')),
             );
           }
         });
       }else {
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) => LoginVC(title: 'Flutter Login Page'),
-              fullscreenDialog: true),
+          CupertinoPageRoute(
+              builder: (context) => LoginVC(title: 'Flutter Login Page')),
         );
       }
     });

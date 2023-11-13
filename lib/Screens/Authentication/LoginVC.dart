@@ -1,17 +1,18 @@
 import 'dart:async';
 import 'package:diabetes/Models/UserLocal.dart';
-import 'package:diabetes/Screens/TabBarVC.dart';
-import 'package:diabetes/Screens/ProfileVC.dart';
+import 'package:diabetes/Screens/TabBar/TabBarVC.dart';
+import 'package:diabetes/Screens/Profile/ProfileVC.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:diabetes/Usables/Utility.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:country_calling_code_picker/picker.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../Usables/AuthHandler.dart';
-import '../Usables/CustomTextField.dart';
+import '../../Usables/AuthHandler.dart';
+import '../../Usables/CustomTextField.dart';
 
 class LoginVC extends StatefulWidget {
   const LoginVC({super.key, required this.title});
@@ -124,20 +125,18 @@ class _LoginPageState extends State<LoginVC> {
         if (data["name"].toString().length > 0) {
           Navigator.push(
             context,
-            MaterialPageRoute(
+            CupertinoPageRoute(
                 builder: (context) => TabBarVC(onClose: (){
                   textFieldPhone.textFieldIn.controller?.text = '';
-                }),
-                fullscreenDialog: true),
+                })),
           );
         }else{
           Navigator.push(
             context,
-            MaterialPageRoute(
+            CupertinoPageRoute(
                 builder: (context) => ProfileVC(title: 'Flutter Profile Page', Signup: true, onClose: () {
                     textFieldPhone.textFieldIn.controller?.text = '';
-                }),
-                fullscreenDialog: true),
+                })),
           );
         }
       }else{
@@ -151,11 +150,10 @@ class _LoginPageState extends State<LoginVC> {
         userCurrent.updateData().then((_) {
           Navigator.push(
             context,
-            MaterialPageRoute(
+            CupertinoPageRoute(
                 builder: (context) => ProfileVC(title: 'Flutter Profile Page', Signup: true, onClose: () {
                   textFieldPhone.textFieldIn.controller?.text = '';
-                }),
-                fullscreenDialog: true),
+                })),
           );
         });
       }
