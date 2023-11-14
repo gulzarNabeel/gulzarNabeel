@@ -24,7 +24,9 @@ enum OptionAccount {
   Help,
   AboutUs,
   Logout,
-  DeleteAccount
+  DeleteAccount,
+  PrivacyAndPolicy,
+  TermsAndConditions
 }
 
 class PairTab<Text, Icon, OptionAccount> {
@@ -56,6 +58,16 @@ class _AccountVCState extends State<AccountVC> {
             style: TextStyle(color: Colors.black87)),
         const Icon(Icons.home_work, color: Colors.black87),
         OptionAccount.AboutUs),
+    PairTab(
+        const Text('Terms And Conditions',
+            style: TextStyle(color: Colors.black87)),
+        const Icon(Icons.rule, color: Colors.black87),
+        OptionAccount.TermsAndConditions),
+    PairTab(
+        const Text('Privacy And Policy',
+            style: TextStyle(color: Colors.black87)),
+        const Icon(Icons.privacy_tip, color: Colors.black87),
+        OptionAccount.PrivacyAndPolicy),
     PairTab(const Text('Logout', style: TextStyle(color: Colors.grey)),
         const Icon(Icons.logout, color: Colors.grey), OptionAccount.Logout),
     PairTab(Text('Delete Account', style: TextStyle(color: Colors.red[300])),
@@ -136,9 +148,16 @@ class _AccountVCState extends State<AccountVC> {
             case OptionAccount.Reminders:
               break;
             case OptionAccount.Help:
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => DataContentVC(title: 'Help', option: OptionAccount.Help)));
               break;
             case OptionAccount.AboutUs:
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => DataContentVC(title: 'About Diab-Gulzar',)));
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => DataContentVC(title: 'About Diab-Gulzar', option: OptionAccount.AboutUs)));
+              break;
+            case OptionAccount.TermsAndConditions:
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => DataContentVC(title: 'Terms and Conditions', option: OptionAccount.TermsAndConditions)));
+              break;
+            case OptionAccount.PrivacyAndPolicy:
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => DataContentVC(title: 'Privacy and Policy', option: OptionAccount.PrivacyAndPolicy)));
               break;
             case OptionAccount.Logout:
               AlertDialogLocal("Logout", 'Are you sure to logout from account?',
