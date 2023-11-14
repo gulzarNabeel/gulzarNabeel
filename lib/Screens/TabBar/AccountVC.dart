@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:diabetes/Screens/Profile/AboutUsVC.dart';
+import 'package:diabetes/Screens/Profile/DataContentVC.dart';
 import 'package:diabetes/Screens/Profile/ProfileVC.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:diabetes/Usables/AuthHandler.dart';
@@ -112,10 +112,13 @@ class _AccountVCState extends State<AccountVC> {
                       child: Row(
                         children: [
                           Expanded(
-                            child: Text('${Utility().getUserData().name}',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 22)), // default is 1
+                            child: Padding(
+                                padding: EdgeInsets.all(0),
+                                child: Text('${Utility().getUserData().name}',
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 22))
+                            )// default is 1
                           ),
                         ],
                       ),
@@ -146,7 +149,7 @@ class _AccountVCState extends State<AccountVC> {
             case OptionAccount.Help:
               break;
             case OptionAccount.AboutUs:
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => AboutUsVC(title: 'About Diab-Gulzar',)));
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => DataContentVC(title: 'About Diab-Gulzar',)));
               break;
             case OptionAccount.Logout:
               AlertDialogLocal("Logout", 'Are you sure to logout from account?',

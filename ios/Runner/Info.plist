@@ -39,6 +39,13 @@
 	<false/>
 	<key>FirebaseAutomaticScreenReportingEnabled</key>
 	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+		<string>http</string>
+		<string>tel</string>
+		<string>mailto</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
@@ -51,13 +58,6 @@
 	<string>LaunchScreen.storyboard</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
-	<key>LSApplicationQueriesSchemes</key>
-    <array>
-        <string>https</string>
-        <string>http</string>
-        <string>tel</string>
-        <string>mailto</string>
-    </array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
