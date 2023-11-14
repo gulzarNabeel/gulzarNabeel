@@ -107,22 +107,11 @@ class _AccountVCState extends State<AccountVC> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(
-                      width: 300,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                                padding: EdgeInsets.all(0),
-                                child: Text('${Utility().getUserData().name}',
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 22))
-                            )// default is 1
-                          ),
-                        ],
-                      ),
-                    ),
+                    Padding(
+                        padding: EdgeInsets.all(0),
+                        child: Text('${Utility().getUserData().name}',
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 22),maxLines: 3,)),
                     Text(Utility().getUserData().email,
                         style: const TextStyle(color: Colors.white)),
                     Text(
