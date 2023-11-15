@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ffi';
 import 'package:diabetes/Screens/TabBar/DevicesVC.dart';
 import 'package:diabetes/Screens/Profile/ProfileVC.dart';
+import 'package:diabetes/Screens/TabBar/HealthProfileVC.dart';
 import 'package:diabetes/Screens/TabBar/MedicineVC.dart';
 import 'package:diabetes/Screens/TabBar/HomeVC.dart';
 import 'package:diabetes/Screens/TabBar/AccountVC.dart';
@@ -41,18 +42,14 @@ class _TabBarVCState extends State<TabBarVC>
     itemsIn = [
       Pair("", const HomeVC()),
       Pair("", const MedicineVC()),
-      Pair("", null),
+      Pair("", const HealthProfileVC()),
       Pair("", const DevicesVC()),
       Pair("", AccountVC(onClose: (){
         if (FirebaseAuth.instance.currentUser == null) {
           widget.onClose();
         }}))
     ];
-    if (_routeTo == 2) {
-
-    } else {
-      routeToPage(_routeTo);
-    }
+    routeToPage(_routeTo);
   }
 
   void routeToPage(int pageTo) {
@@ -66,7 +63,7 @@ class _TabBarVCState extends State<TabBarVC>
           this.titleText = "Medicines";
           break;
         case 2:
-          this.titleText = "";
+          this.titleText = "Health Profile";
           break;
         case 3:
           this.titleText = "Devices";
@@ -131,7 +128,7 @@ class _TabBarVCState extends State<TabBarVC>
             child: new Icon(Icons.add),
             elevation: 0,
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             fixedColor: Colors.blue,
@@ -148,9 +145,9 @@ class _TabBarVCState extends State<TabBarVC>
                   label: itemsIn[1].title,
                   activeIcon: const Icon(Icons.medical_information_sharp, color: Colors.blue)),
               BottomNavigationBarItem(
-                  icon: const Icon(Icons.add_circle_outlined, color: Colors.blue, size: 0),
+                  icon: const Icon(Icons.health_and_safety),
                   label: itemsIn[2].title,
-                  activeIcon: const Icon(Icons.add_circle_outlined, color: Colors.blue, size: 0)),
+                  activeIcon: const Icon(Icons.health_and_safety, color: Colors.blue)),
               BottomNavigationBarItem(
                   icon: const Icon(Icons.gas_meter),
                   label: itemsIn[3].title,
@@ -162,7 +159,7 @@ class _TabBarVCState extends State<TabBarVC>
                       const Icon(Icons.account_circle, color: Colors.blue)),
             ],
           ),
-          body: _routeTo != 2 ? itemsIn[_routeTo].obj as Widget : null,
+          body: itemsIn[_routeTo].obj as Widget,
         ));
   }
 }

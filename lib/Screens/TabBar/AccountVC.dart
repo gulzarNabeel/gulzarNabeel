@@ -40,10 +40,6 @@ class PairTab<Text, Icon, OptionAccount> {
 class _AccountVCState extends State<AccountVC> {
   List<PairTab> arrayOptions = [
     PairTab(
-        const Text('Personal Details', style: TextStyle(color: Colors.black87)),
-        const Icon(Icons.person_add_alt_1, color: Colors.black87),
-        OptionAccount.PersonalDetails),
-    PairTab(
         const Text('Reading Settings', style: TextStyle(color: Colors.black87)),
         const Icon(Icons.settings, color: Colors.black87),
         OptionAccount.ReadingSettings),
