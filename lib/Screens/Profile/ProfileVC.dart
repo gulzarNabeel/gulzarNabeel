@@ -45,8 +45,9 @@ class _ProfilePageState extends State<ProfileVC> {
   CustomTextField textFieldEmail =
       CustomTextField('Email', TextInputType.emailAddress, true);
   File? imageFile;
-
-  _ProfilePageState();
+  Gender? CurrentUserGender = Utility().getUserData().gender;
+  DateTime? dob = Utility().getUserData().dateOfBirth;
+  TextEditingController dobController = new TextEditingController();
 
   @override
   void initState() {
@@ -58,6 +59,9 @@ class _ProfilePageState extends State<ProfileVC> {
     if (_selectedCountry == null) {
       initCountry();
     }
+    if (dob != null) {
+      dobController.text = DateFormat('dd-MMM-yyyy').format(dob!);
+    }
   }
 
   void initCountry() async {
@@ -66,37 +70,27 @@ class _ProfilePageState extends State<ProfileVC> {
     setState(() {
       if (_selectedCountry == null) {
         List<Country> filter = countries.where((element) {
-          return element.callingCode == Utility()
-              .getUserData()
-              .countryCode;
+          return element.callingCode == Utility().getUserData().countryCode;
         }).toList();
         if (filter.length > 0) {
           country = filter[0];
         }
         _selectedCountry = country;
-        if (Utility()
-            .getUserData()
-            .countryCode ==
+        if (Utility().getUserData().countryCode ==
             _selectedCountry!.callingCode) {
           _countryText = Text(_selectedCountry?.callingCode ?? "",
               style: const TextStyle(color: Colors.blue, fontSize: 20));
         } else {
-          _countryText = Text(Utility()
-              .getUserData()
-              .countryCode,
+          _countryText = Text(Utility().getUserData().countryCode,
               style: const TextStyle(color: Colors.blue, fontSize: 20));
         }
         textFieldPhone.textFieldIn.controller?.text =
-            Utility()
-                .getUserData()
-                .phoneNumber;
-        textFieldName.textFieldIn.controller?.text = Utility()
-            .getUserData()
-            .name;
+            Utility().getUserData().phoneNumber;
+        textFieldName.textFieldIn.controller?.text =
+            Utility().getUserData().name;
         textFieldEmail.textFieldIn.controller?.text =
-            Utility()
-                .getUserData()
-                .email;
+            Utility().getUserData().email;
+        CurrentUserGender = Utility().getUserData().gender;
       }
     });
   }
@@ -108,18 +102,20 @@ class _ProfilePageState extends State<ProfileVC> {
       appBar: AppBar(
         title: const Text("Profile"),
         automaticallyImplyLeading: widget.Signup == true ? false : true,
-        actions: widget.Signup == true ? [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut().then((value) {
-                widget.onClose();
-                Navigator.pop(context);
-              });
-            },
-          ),
-        ] : [],
+        actions: widget.Signup == true
+            ? [
+                IconButton(
+                  icon: const Icon(Icons.logout),
+                  tooltip: 'Logout',
+                  onPressed: () async {
+                    await FirebaseAuth.instance.signOut().then((value) {
+                      widget.onClose();
+                      Navigator.pop(context);
+                    });
+                  },
+                ),
+              ]
+            : [],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -157,8 +153,7 @@ class _ProfilePageState extends State<ProfileVC> {
                                 : Image(
                                     image: AssetImage('Assets/appicon.png')),
                       ),
-                    )
-                ),
+                    )),
               ),
             ),
             //Name Text Portion
@@ -184,6 +179,7 @@ class _ProfilePageState extends State<ProfileVC> {
                 textFieldPhone,
               ]),
             ),
+            //Email Portion
             Padding(
               padding: const EdgeInsets.only(
                   left: 20, top: 0, right: 20, bottom: 20),
@@ -201,7 +197,9 @@ class _ProfilePageState extends State<ProfileVC> {
                   Visibility(
                     visible:
                         !(FirebaseAuth.instance.currentUser?.emailVerified ??
-                            false) && (FirebaseAuth.instance.currentUser!.email == textFieldEmail.editController.text),
+                                false) &&
+                            (FirebaseAuth.instance.currentUser!.email ==
+                                textFieldEmail.editController.text),
                     child: GestureDetector(
                         onTap: () {
                           FirebaseAuth.instance.currentUser
@@ -227,6 +225,79 @@ class _ProfilePageState extends State<ProfileVC> {
                 ],
               ),
             ),
+
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 20, top: 0, right: 20, bottom: 20),
+              child: Row(children: <Widget>[
+                Expanded(child: TextField(
+                  controller: dobController,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                      labelText: 'Date of birth'
+                  ),
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: dob ?? DateTime(DateTime.now().year - 18),
+                        firstDate: DateTime(1924),
+                        lastDate: DateTime.now()
+                    );
+
+                    if (pickedDate != null) {
+                      dob = pickedDate;
+                      dobController.text = DateFormat('dd-MMM-yyyy').format(dob!);
+                    }
+                  },
+                ))
+              ]),
+            ),
+            //Gender Portion
+            Padding(
+                padding: const EdgeInsets.only(
+                    top: 0, bottom: 0, right: 20, left: 20),
+                child: SizedBox(
+                  height: 80,
+                  child: Row(children: [
+                    Padding(
+                        padding: const EdgeInsets.only(left: 0, right: 30),
+                        child: Text('Gender: ',
+                            style:
+                                TextStyle(fontSize: 16, color: Colors.blue))),
+                    Expanded(
+                        child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black38,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              child: DropdownButton(
+                                value: CurrentUserGender.toString(),
+                                icon: const Icon(Icons.keyboard_arrow_down),
+                                isExpanded: true,
+                                items:
+                                    Gender.values.map((Gender dropdownvalue) {
+                                  return DropdownMenuItem(
+                                    value: dropdownvalue.toString(),
+                                    child: Text(dropdownvalue.name),
+                                  );
+                                }).toList(),
+                                hint: Text('Gender'),
+                                onChanged: (value) {
+                                  CurrentUserGender = Gender.values.firstWhere(
+                                      (element) => element.toString() == value);
+                                  setState(() {
+                                    initState();
+                                  });
+                                },
+                              ),
+                            )))
+                  ]),
+                )),
 
             Container(
               height: 50,
@@ -297,7 +368,8 @@ class _ProfilePageState extends State<ProfileVC> {
                 false)
             .showAlert(context);
       } else {
-        AuthHandler().sendOTP(context, Utility().getUserData().countryCode, Utility().getUserData().phoneNumber, 'Update', 'Cancel', (){
+        AuthHandler().sendOTP(context, Utility().getUserData().countryCode,
+            Utility().getUserData().phoneNumber, 'Update', 'Cancel', () {
           showAlertDialog();
         });
       }
@@ -323,35 +395,32 @@ class _ProfilePageState extends State<ProfileVC> {
     if (currentUser.name !=
         (textFieldName.textFieldIn.controller?.text ?? '')) {
       auth.currentUser
-          ?.updateDisplayName(
-          textFieldName.textFieldIn.controller?.text ?? '')
+          ?.updateDisplayName(textFieldName.textFieldIn.controller?.text ?? '')
           .then((value) {
-        currentUser.name =
-        (textFieldName.textFieldIn.controller?.text ?? '');
+        currentUser.name = (textFieldName.textFieldIn.controller?.text ?? '');
         currentUser.updateData();
         if (currentUser.email !=
             (textFieldEmail.textFieldIn.controller?.text ?? '')) {
           auth.currentUser
-              ?.updateEmail(
-              textFieldEmail.textFieldIn.controller?.text ?? '')
+              ?.updateEmail(textFieldEmail.textFieldIn.controller?.text ?? '')
               .then((value) {
             currentUser.email =
-            (textFieldEmail.textFieldIn.controller?.text ?? '');
+                (textFieldEmail.textFieldIn.controller?.text ?? '');
             currentUser.updateData();
             uploadFile();
           }).catchError((error) {
             textFieldEmail.textFieldIn.controller?.text = '';
             AlertDialogLocal(
-                "Failure",
-                AuthHandler.generateExceptionMessage(
-                    AuthHandler.handleException(error)),
-                'OK',
-                '',
+                    "Failure",
+                    AuthHandler.generateExceptionMessage(
+                        AuthHandler.handleException(error)),
+                    'OK',
+                    '',
                     () {},
                     () {},
-                false,
-                '',
-                false)
+                    false,
+                    '',
+                    false)
                 .showAlert(context);
           });
         } else {
@@ -363,23 +432,22 @@ class _ProfilePageState extends State<ProfileVC> {
       auth.currentUser
           ?.updateEmail(textFieldEmail.textFieldIn.controller?.text ?? '')
           .then((value) {
-        currentUser.email =
-        (textFieldEmail.textFieldIn.controller?.text ?? '');
+        currentUser.email = (textFieldEmail.textFieldIn.controller?.text ?? '');
         currentUser.updateData();
         uploadFile();
       }).catchError((error) {
         textFieldEmail.textFieldIn.controller?.text = '';
         AlertDialogLocal(
-            "Failure",
-            AuthHandler.generateExceptionMessage(
-                AuthHandler.handleException(error)),
-            'OK',
-            '',
+                "Failure",
+                AuthHandler.generateExceptionMessage(
+                    AuthHandler.handleException(error)),
+                'OK',
+                '',
                 () {},
                 () {},
-            false,
-            '',
-            false)
+                false,
+                '',
+                false)
             .showAlert(context);
       });
     } else {
@@ -487,7 +555,7 @@ class _ProfilePageState extends State<ProfileVC> {
                   .showAlert(context);
             });
           });
-        }).catchError((value){
+        }).catchError((value) {
           print(value);
         });
       } catch (e) {
