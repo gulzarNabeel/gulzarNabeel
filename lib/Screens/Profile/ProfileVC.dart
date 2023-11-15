@@ -45,7 +45,7 @@ class _ProfilePageState extends State<ProfileVC> {
   CustomTextField textFieldEmail =
       CustomTextField('Email', TextInputType.emailAddress, true);
   File? imageFile;
-  Gender? CurrentUserGender = Utility().getUserData().gender;
+  late Gender CurrentUserGender = Utility().getUserData().gender ?? Gender.Male;
   DateTime? dob = Utility().getUserData().dateOfBirth;
   TextEditingController dobController = new TextEditingController();
 
@@ -90,7 +90,6 @@ class _ProfilePageState extends State<ProfileVC> {
             Utility().getUserData().name;
         textFieldEmail.textFieldIn.controller?.text =
             Utility().getUserData().email;
-        CurrentUserGender = Utility().getUserData().gender;
       }
     });
   }
@@ -120,6 +119,7 @@ class _ProfilePageState extends State<ProfileVC> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            //Image Portion
             Padding(
               padding: const EdgeInsets.only(top: 30.0),
               child: Center(
@@ -225,28 +225,27 @@ class _ProfilePageState extends State<ProfileVC> {
                 ],
               ),
             ),
-
+            //Date of Birth
             Padding(
               padding: const EdgeInsets.only(
                   left: 20, top: 0, right: 20, bottom: 20),
               child: Row(children: <Widget>[
-                Expanded(child: TextField(
+                Expanded(
+                    child: TextField(
                   controller: dobController,
                   readOnly: true,
-                  decoration: InputDecoration(
-                      labelText: 'Date of birth'
-                  ),
+                  decoration: InputDecoration(labelText: 'Date of birth'),
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(
                         context: context,
                         initialDate: dob ?? DateTime(DateTime.now().year - 18),
                         firstDate: DateTime(1924),
-                        lastDate: DateTime.now()
-                    );
+                        lastDate: DateTime.now());
 
                     if (pickedDate != null) {
                       dob = pickedDate;
-                      dobController.text = DateFormat('dd-MMM-yyyy').format(dob!);
+                      dobController.text =
+                          DateFormat('dd-MMM-yyyy').format(dob!);
                     }
                   },
                 ))
@@ -319,13 +318,6 @@ class _ProfilePageState extends State<ProfileVC> {
   }
 
   updateProfile() async {
-    if ((textFieldEmail.textFieldIn.controller?.text ?? '') ==
-            Utility().getUserData().email &&
-        (textFieldName.textFieldIn.controller?.text ?? '') ==
-            Utility().getUserData().name &&
-        imageFile == null) {
-      return;
-    }
     if ((textFieldName.textFieldIn.controller?.text ?? '').isEmpty) {
       AlertDialogLocal('Alert', 'Please enter your name', 'OK', '', () {},
               () {}, false, '', false)
@@ -346,7 +338,20 @@ class _ProfilePageState extends State<ProfileVC> {
           .showAlert(context);
       return;
     }
-
+    if (dob == null) {
+      AlertDialogLocal('Alert', 'Please select your date of birth', 'OK', '', () {},
+              () {}, false, '', false)
+          .showAlert(context);
+      return;
+    }
+    if ((textFieldEmail.textFieldIn.controller?.text ?? '') ==
+        Utility().getUserData().email &&
+        (textFieldName.textFieldIn.controller?.text ?? '') ==
+            Utility().getUserData().name &&
+        imageFile == null) {
+      uploadFile();
+      return;
+    }
     try {
       // Fetch sign-in methods for the email address
       List<String> list = [];
@@ -489,6 +494,10 @@ class _ProfilePageState extends State<ProfileVC> {
   }
 
   Future uploadFile() async {
+    var currentUser = Utility().getUserData();
+    currentUser.dateOfBirth = dob;
+    currentUser.gender = CurrentUserGender;
+    currentUser.updateData();
     if (imageFile == null) {
       Timer.periodic(const Duration(seconds: 3), (timer) {
         if (widget.Signup == true) {
@@ -516,7 +525,6 @@ class _ProfilePageState extends State<ProfileVC> {
         await ref.putFile(imageFile!).then((p0) async {
           print('Print here');
           await ref.getDownloadURL().then((value) {
-            var currentUser = Utility().getUserData();
             FirebaseAuth auth = FirebaseAuth.instance;
             auth.currentUser?.updatePhotoURL(value).then((value2) {
               currentUser.profilePictureUrl = value;

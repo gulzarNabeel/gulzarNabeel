@@ -32,7 +32,7 @@ class UserLocal {
     FirebaseAuth auth = FirebaseAuth.instance;
     DateTime now = auth.currentUser?.metadata?.creationTime ?? DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd – hh:mm:ss').format(now);
-    String formattedDateDOB = dateOfBirth == null ? '' : DateFormat('yyyy-MM-dd – hh:mm:ss').format(dateOfBirth!);
+    String formattedDateDOB = dateOfBirth == null ? '' : DateFormat('yyyy-MM-dd').format(dateOfBirth!);
     users.doc(auth.currentUser?.uid).set({
       'name': name,
       'email': email,
