@@ -1,4 +1,5 @@
 import 'package:diabetes/Models/UserLocal.dart';
+import 'package:diabetes/Usables/RemoteConfigFirebase.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,12 +64,37 @@ class Utility {
     }else{
       arrayString.add('');
     }
+    if (document['glucoseUnit'] != null) {
+      arrayString.add(document['glucoseUnit']);
+    }else{
+      arrayString.add('');
+    }
+    if (document['pressureUnit'] != null) {
+      arrayString.add(document['pressureUnit']);
+    }else{
+      arrayString.add('');
+    }
+    if (document['foodUnit'] != null) {
+      arrayString.add(document['foodUnit']);
+    }else{
+      arrayString.add('');
+    }
+    if (document['weightUnit'] != null) {
+      arrayString.add(document['weightUnit']);
+    }else{
+      arrayString.add('');
+    }
+    if (document['heightUnit'] != null) {
+      arrayString.add(document['heightUnit']);
+    }else{
+      arrayString.add('');
+    }
     this.prefs?.setStringList("userData", arrayString).whenComplete((){});
   }
 
   UserLocal getUserData() {
     List<String>? data = this.prefs?.getStringList('userData') as List<String>?;
-    UserLocal myData = UserLocal(data?[0] ?? '', data?[1] ?? '', data?[2] ?? '', data?[3] ?? '', data?[4] ?? '', ((data?[5] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd – hh:mm:ss').parse(data?[5] ?? '') : DateTime.now()),((data?[6] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[6] ?? '') : null),(data?[7] ?? '').length > 0 ? Gender.values.firstWhere((element) => element.toString() == 'Gender.' + (data?[7] ?? '')) : null);
+    UserLocal myData = UserLocal(data?[0] ?? '', data?[1] ?? '', data?[2] ?? '', data?[3] ?? '', data?[4] ?? '', ((data?[5] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd – hh:mm:ss').parse(data?[5] ?? '') : DateTime.now()),((data?[6] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[6] ?? '') : null),(data?[7] ?? '').length > 0 ? Gender.values.firstWhere((element) => element.toString() == 'Gender.' + (data?[7] ?? '')) : null,Units({"unit" : (data?[8] ?? 'mg/dL').length > 0 ? (data?[8] ?? 'mg/dL') : 'mg/dL'}),Units({'unit' : (data?[9] ?? 'mmHg').length > 0 ? (data?[9] ?? 'mmHg') : 'mmHg'}),Units({'unit' : (data?[10] ?? 'grams').length > 0 ? (data?[10] ?? 'grams') :  'grams'}),Units({'unit' : (data?[11] ?? 'kg').length > 0 ? (data?[11] ?? 'kg') : 'kg'}),Units({'unit' : (data?[12] ?? 'cm').length > 0 ? (data?[12] ?? 'cm') : 'cm'}));
     return myData;
   }
 }

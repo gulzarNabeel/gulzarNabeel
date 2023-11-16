@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diabetes/Screens/TabBar/TabBarVC.dart';
 import 'package:diabetes/Screens/Profile/ProfileVC.dart';
+import 'package:diabetes/Usables/RemoteConfigFirebase.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -47,6 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement initState
     super.initState();
     Utility();
+    RemoteConfigFirebase();
   timerEvent();
   }
 

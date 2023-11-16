@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:diabetes/Usables/RemoteConfigFirebase.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,11 @@ class UserLocal {
   DateTime creationDate;
   DateTime? dateOfBirth;
   Gender? gender;
+  Units glucoseUnit = Units({"unit": "mg/dL"});
+  Units pressureUnit = Units({"unit": "mmHg"});
+  Units weightUnit = Units({"unit": "kg"});
+  Units heightUnit = Units({"unit": "cm"});
+  Units foodUnit = Units({"unit": "grams"});
 
 
   UserLocal(this.name,
@@ -24,7 +30,7 @@ class UserLocal {
       this.countryCode,
       this.phoneNumber,
       this.profilePictureUrl,
-      this.creationDate,this.dateOfBirth,this.gender);
+      this.creationDate,this.dateOfBirth,this.gender,this.glucoseUnit,this.pressureUnit,this.foodUnit,this.weightUnit,this.heightUnit);
 
 
   updateData() async {
@@ -41,7 +47,12 @@ class UserLocal {
       'profilePictureUrl': profilePictureUrl,
       'creationDate': formattedDate,
       'dateOfBirth' : formattedDateDOB,
-      'gender' : gender == null ? '' : gender!.name
+      'gender' : gender == null ? '' : gender!.name,
+      'glucoseUnit' : glucoseUnit.unit,
+      'foodUnit' : foodUnit.unit,
+      'pressureUnit' : pressureUnit.unit,
+      'weightUnit' : weightUnit.unit,
+      'heightUnit' : heightUnit.unit
     }).then((_) {
       Map<String, dynamic> document = {
         'name': name,
@@ -51,7 +62,12 @@ class UserLocal {
         'profilePictureUrl': profilePictureUrl,
         'creationDate': formattedDate,
         'dateOfBirth' : formattedDateDOB,
-        'gender' : gender == null ? '' : gender!.name
+        'gender' : gender == null ? '' : gender!.name,
+        'glucoseUnit' : glucoseUnit.unit,
+        'foodUnit' : foodUnit.unit,
+        'pressureUnit' : pressureUnit.unit,
+        'weightUnit' : weightUnit.unit,
+        'heightUnit' : heightUnit.unit
       };
       Utility().saveUserData(document);
     });

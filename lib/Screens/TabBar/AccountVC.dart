@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diabetes/Screens/Profile/DataContentVC.dart';
+import 'package:diabetes/Screens/Profile/SettingsVC.dart';
 import 'package:diabetes/Screens/Profile/ProfileVC.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:diabetes/Usables/AuthHandler.dart';
@@ -137,9 +138,8 @@ class _AccountVCState extends State<AccountVC> {
     return GestureDetector(
         onTap: () {
           switch (arrayOptions[index - 1].option) {
-            case OptionAccount.PersonalDetails:
-              break;
             case OptionAccount.ReadingSettings:
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => SettingsVC()));
               break;
             case OptionAccount.Reminders:
               break;
