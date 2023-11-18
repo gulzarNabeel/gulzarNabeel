@@ -112,7 +112,7 @@ class Utility {
       arrayString.add('');
     }
     if (document['hyperTension'] != null) {
-      arrayString.add(document['hyperTension']);
+      arrayString.add(document['hyperTension'].toString());
     }else{
       arrayString.add('false');
     }
@@ -122,7 +122,7 @@ class Utility {
       arrayString.add('');
     }
     if (document['nephroPathy'] != null) {
-      arrayString.add(document['nephroPathy']);
+      arrayString.add(document['nephroPathy'].toString());
     }else{
       arrayString.add('false');
     }
@@ -132,7 +132,7 @@ class Utility {
       arrayString.add('');
     }
     if (document['retinopthy'] != null) {
-      arrayString.add(document['retinopthy']);
+      arrayString.add(document['retinopthy'].toString());
     }else{
       arrayString.add('false');
     }
@@ -142,7 +142,7 @@ class Utility {
       arrayString.add('');
     }
     if (document['cardioPathy'] != null) {
-      arrayString.add(document['cardioPathy']);
+      arrayString.add(document['cardioPathy'].toString());
     }else{
       arrayString.add('false');
     }
@@ -152,7 +152,7 @@ class Utility {
       arrayString.add('');
     }
     if (document['neuropathy'] != null) {
-      arrayString.add(document['neuropathy']);
+      arrayString.add(document['neuropathy'].toString());
     }else{
       arrayString.add('false');
     }
@@ -165,12 +165,12 @@ class Utility {
   }
   HealthProfile getUserHealthData() {
     List<String>? data = this.prefs?.getStringList('userHealthData') as List<String>?;
-    HealthProfile myData = HealthProfile(DiabetesType.None, ((data?[1] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[1] ?? '') : null),
-      (data?[2] ?? 'false').parseBool(), ((data?[3] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[3] ?? '') : null),
-      (data?[4] ?? 'false').parseBool(), ((data?[5] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[5] ?? '') : null),
-        (data?[6] ?? 'false').parseBool(), ((data?[7] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[7] ?? '') : null),
-      (data?[8] ?? 'false').parseBool(), ((data?[9] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[9] ?? '') : null),
-        (data?[10] ?? 'false').parseBool(), ((data?[11] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[11] ?? '') : null)
+    HealthProfile myData = HealthProfile(DiabetesType.values.firstWhere((element) => (data?[0] ?? "None") == element.name), ((data?[1] ?? '').isNotEmpty ? DateFormat('yyyy-MM-dd').parse(data?[1] ?? '') : null),
+      (data?[2] ?? 'false').parseBool(), ((data?[3] ?? '').isNotEmpty ? DateFormat('yyyy-MM-dd').parse(data?[3] ?? '') : null),
+      (data?[4] ?? 'false').parseBool(), ((data?[5] ?? '').isNotEmpty ? DateFormat('yyyy-MM-dd').parse(data?[5] ?? '') : null),
+        (data?[6] ?? 'false').parseBool(), ((data?[7] ?? '').isNotEmpty ? DateFormat('yyyy-MM-dd').parse(data?[7] ?? '') : null),
+      (data?[8] ?? 'false').parseBool(), ((data?[9] ?? '').isNotEmpty ? DateFormat('yyyy-MM-dd').parse(data?[9] ?? '') : null),
+        (data?[10] ?? 'false').parseBool(), ((data?[11] ?? '').isNotEmpty ? DateFormat('yyyy-MM-dd').parse(data?[11] ?? '') : null)
     );
     return myData;
   }
@@ -179,5 +179,11 @@ class Utility {
 extension BoolParsing on String {
   bool parseBool() {
     return this.toLowerCase() == 'true';
+  }
+}
+
+extension StringParsing on bool {
+  String parseToString() {
+    return this == true ? 'true' : 'false';
   }
 }

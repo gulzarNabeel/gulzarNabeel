@@ -9,17 +9,17 @@ enum DiabetesType{
 }
 
 class HealthProfile {
-  DiabetesType type;
+  DiabetesType type = DiabetesType.None;
   DateTime? startedYearDiab;
-  bool hyperTension;
+  bool hyperTension = false;
   DateTime? startedYearBP;
-  bool nephroPathy;
+  bool nephroPathy = false;
   DateTime? startedYearNephro;
-  bool retinopthy;
+  bool retinopthy = false;
   DateTime? startedYearRetina;
-  bool cardioPathy;
+  bool cardioPathy = false;
   DateTime? startedYearCardio;
-  bool neuropathy;
+  bool neuropathy = false;
   DateTime? startedYearNeuro;
 
 

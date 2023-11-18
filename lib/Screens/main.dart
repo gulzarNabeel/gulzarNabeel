@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:diabetes/Models/HealthProfile.dart';
 import 'package:diabetes/Screens/TabBar/TabBarVC.dart';
 import 'package:diabetes/Screens/Profile/ProfileVC.dart';
 import 'package:diabetes/Usables/RemoteConfigFirebase.dart';
@@ -77,6 +78,16 @@ class _MyHomePageState extends State<MyHomePage> {
               CupertinoPageRoute(
                   builder: (context) => LoginVC(title: 'Flutter Login Page')),
             );
+          }
+        });
+        CollectionReference users2 = FirebaseFirestore.instance.collection('UsersHealth');
+        users2.doc(auth.currentUser?.uid).get().then((DocumentSnapshot documentSnapshot) {
+          if (documentSnapshot.exists) {
+            Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+            Utility().saveUserHealthData(data);
+          }else{
+            HealthProfile profile = Utility().getUserHealthData();
+            profile.updateData();
           }
         });
       }else {
