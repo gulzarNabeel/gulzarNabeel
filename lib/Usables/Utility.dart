@@ -1,3 +1,4 @@
+import 'package:diabetes/Models/HealthProfile.dart';
 import 'package:diabetes/Models/UserLocal.dart';
 import 'package:diabetes/Usables/RemoteConfigFirebase.dart';
 import 'package:intl/intl.dart';
@@ -96,5 +97,87 @@ class Utility {
     List<String>? data = this.prefs?.getStringList('userData') as List<String>?;
     UserLocal myData = UserLocal(data?[0] ?? '', data?[1] ?? '', data?[2] ?? '', data?[3] ?? '', data?[4] ?? '', ((data?[5] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd – hh:mm:ss').parse(data?[5] ?? '') : DateTime.now()),((data?[6] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[6] ?? '') : null),(data?[7] ?? '').length > 0 ? Gender.values.firstWhere((element) => element.toString() == 'Gender.' + (data?[7] ?? '')) : null,Units({"unit" : (data?[8] ?? 'mg/dL').length > 0 ? (data?[8] ?? 'mg/dL') : 'mg/dL'}),Units({'unit' : (data?[9] ?? 'mmHg').length > 0 ? (data?[9] ?? 'mmHg') : 'mmHg'}),Units({'unit' : (data?[10] ?? 'grams').length > 0 ? (data?[10] ?? 'grams') :  'grams'}),Units({'unit' : (data?[11] ?? 'kg').length > 0 ? (data?[11] ?? 'kg') : 'kg'}),Units({'unit' : (data?[12] ?? 'cm').length > 0 ? (data?[12] ?? 'cm') : 'cm'}));
     return myData;
+  }
+
+  saveUserHealthData(Map<String,dynamic> document) {
+    List<String> arrayString = [];
+    if (document['type'] != null) {
+      arrayString.add(document['type']);
+    }else{
+      arrayString.add('');
+    }
+    if (document['startedYearDiab'] != null) {
+      arrayString.add(document['startedYearDiab']);
+    }else{
+      arrayString.add('');
+    }
+    if (document['hyperTension'] != null) {
+      arrayString.add(document['hyperTension']);
+    }else{
+      arrayString.add('false');
+    }
+    if (document['startedYearBP'] != null) {
+      arrayString.add(document['startedYearBP']);
+    }else{
+      arrayString.add('');
+    }
+    if (document['nephroPathy'] != null) {
+      arrayString.add(document['nephroPathy']);
+    }else{
+      arrayString.add('false');
+    }
+    if (document['startedYearNephro'] != null) {
+      arrayString.add(document['startedYearNephro']);
+    }else{
+      arrayString.add('');
+    }
+    if (document['retinopthy'] != null) {
+      arrayString.add(document['retinopthy']);
+    }else{
+      arrayString.add('false');
+    }
+    if (document['startedYearRetina'] != null) {
+      arrayString.add(document['startedYearRetina']);
+    }else{
+      arrayString.add('');
+    }
+    if (document['cardioPathy'] != null) {
+      arrayString.add(document['cardioPathy']);
+    }else{
+      arrayString.add('false');
+    }
+    if (document['startedYearCardio'] != null) {
+      arrayString.add(document['startedYearCardio']);
+    }else{
+      arrayString.add('');
+    }
+    if (document['neuropathy'] != null) {
+      arrayString.add(document['neuropathy']);
+    }else{
+      arrayString.add('false');
+    }
+    if (document['startedYearNeuro'] != null) {
+      arrayString.add(document['startedYearNeuro']);
+    }else{
+      arrayString.add('');
+    }
+    this.prefs?.setStringList("userHealthData", arrayString).whenComplete((){});
+  }
+  HealthProfile getUserHealthData() {
+    List<String>? data = this.prefs?.getStringList('userHealthData') as List<String>?;
+    HealthProfile myData = HealthProfile(DiabetesType.None, ((data?[1] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[1] ?? '') : null),
+      (data?[2] ?? 'false').parseBool(), ((data?[3] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[3] ?? '') : null),
+      (data?[4] ?? 'false').parseBool(), ((data?[5] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[5] ?? '') : null),
+        (data?[6] ?? 'false').parseBool(), ((data?[7] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[7] ?? '') : null),
+      (data?[8] ?? 'false').parseBool(), ((data?[9] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[9] ?? '') : null),
+        (data?[10] ?? 'false').parseBool(), ((data?[11] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[11] ?? '') : null)
+    );
+    return myData;
+  }
+}
+
+extension BoolParsing on String {
+  bool parseBool() {
+    return this.toLowerCase() == 'true';
   }
 }
