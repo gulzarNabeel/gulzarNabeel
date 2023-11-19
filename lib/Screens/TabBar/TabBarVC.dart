@@ -128,7 +128,7 @@ class _TabBarVCState extends State<TabBarVC>
             child: new Icon(Icons.add),
             elevation: 0,
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             fixedColor: Colors.blue,
