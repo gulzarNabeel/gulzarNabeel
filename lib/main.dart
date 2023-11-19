@@ -8,7 +8,8 @@ import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
-import '../firebase_options.dart';
+import 'package:flutter/services.dart';
+import 'firebase_options.dart';
 import 'package:diabetes/Screens/Authentication/LoginVC.dart';
 import 'package:flutter/material.dart';
 
@@ -24,11 +25,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryIconTheme: IconThemeData(color: Colors.green),
+        primaryColor: Colors.green,
+        appBarTheme: AppBarTheme(
+          color: Colors.blue,
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Home Page'),
+      title: 'Flutter Demo',
+      home: MyHomePage(title: 'Flutter Home Page'),
     );
   }
 }
