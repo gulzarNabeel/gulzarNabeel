@@ -26,10 +26,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primaryIconTheme: IconThemeData(color: Colors.green),
+        primaryIconTheme: IconThemeData(color: Colors.blue),
         primaryColor: Colors.green,
         appBarTheme: AppBarTheme(
           color: Colors.blue,
+          titleTextStyle: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),
+          iconTheme: IconThemeData(color: Colors.white),
+          centerTitle: true
         ),
       ),
       title: 'Flutter Demo',

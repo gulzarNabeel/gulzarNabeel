@@ -13,7 +13,7 @@ class SettingsVC extends StatefulWidget {
 }
 
 class _SettingsVCState extends State<SettingsVC> {
-  late FullUnits totalUnits;
+  late FullUnits totalUnits = FullUnits({});
   @override
   void initState() {
     RemoteConfigFirebase().getUnits().then((value){
@@ -27,10 +27,6 @@ class _SettingsVCState extends State<SettingsVC> {
 
   @override
   Widget build(BuildContext context) {
-    print(Utility().getUserData().pressureUnit.unit);
-    print(totalUnits.pressure.map((Units dropdownvalue) {
-      return dropdownvalue.unit;
-    }).toList());
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
