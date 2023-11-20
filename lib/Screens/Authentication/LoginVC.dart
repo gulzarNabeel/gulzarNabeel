@@ -93,7 +93,7 @@ class _LoginPageState extends State<LoginVC> {
               width: 250,
               decoration: BoxDecoration(
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-                  child: ElevatedButton(
+                  child: TextButton(
                     onPressed: () {
                       sendOTP(context,_selectedCountry?.callingCode ?? "", textFieldPhone.textFieldIn.controller?.text ?? "");
                     },

@@ -61,7 +61,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                             child: Padding(
                               padding:
                               const EdgeInsets.only(left: 10, right: 10),
-                              child: DropdownButton(
+                              child: DropdownButtonHideUnderline(child: DropdownButton(
                                 value: Utility().getUserHealthData().type.name,
                                 icon: const Icon(Icons.keyboard_arrow_down),
                                 isExpanded: true,
@@ -88,7 +88,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                         });
                                       });
                                 },
-                              ),
+                              )),
                             )))
                   ]),
                 )),
@@ -102,7 +102,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                       controller: diabController,
                       readOnly: true,
                       enabled: Utility().getUserHealthData().type != DiabetesType.None ? true : false,
-                      decoration: InputDecoration(labelText: 'Diabetes detected date'),
+                      decoration: InputDecoration(labelText: 'Diabetes detected date',labelStyle: TextStyle(color: Utility().getUserHealthData().type != DiabetesType.None ? Colors.blue : Colors.grey)),
                       onTap: () async {
                         DateTime? pickedDate = await showDatePicker(
                             context: context,
@@ -149,7 +149,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                             child: Padding(
                               padding:
                               const EdgeInsets.only(left: 10, right: 10),
-                              child: DropdownButton(
+                              child: DropdownButtonHideUnderline(child: DropdownButton(
                                 value: Utility().getUserHealthData().hyperTension.toString(),
                                 icon: const Icon(Icons.keyboard_arrow_down),
                                 isExpanded: true,
@@ -176,7 +176,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                         });
                                       });
                                 },
-                              ),
+                              )),
                             )))
                   ]),
                 )),
@@ -190,7 +190,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                       controller: bpController,
                       readOnly: true,
                       enabled: Utility().getUserHealthData().hyperTension,
-                      decoration: InputDecoration(labelText: 'Hypertension detected date'),
+                      decoration: InputDecoration(labelText: 'Hypertension detected date',labelStyle: TextStyle(color: Utility().getUserHealthData().hyperTension == true ? Colors.blue : Colors.grey)),
                       onTap: () async {
                         DateTime? pickedDate = await showDatePicker(
                             context: context,
@@ -237,7 +237,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                             child: Padding(
                               padding:
                               const EdgeInsets.only(left: 10, right: 10),
-                              child: DropdownButton(
+                              child: DropdownButtonHideUnderline(child: DropdownButton(
                                 value: Utility().getUserHealthData().nephroPathy.toString(),
                                 icon: const Icon(Icons.keyboard_arrow_down),
                                 isExpanded: true,
@@ -264,7 +264,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                         });
                                       });
                                 },
-                              ),
+                              )),
                             )))
                   ]),
                 )),
@@ -278,7 +278,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                       controller: nephroController,
                       readOnly: true,
                       enabled: Utility().getUserHealthData().nephroPathy,
-                      decoration: InputDecoration(labelText: 'Nephropathy detected date'),
+                      decoration: InputDecoration(labelText: 'Nephropathy detected date',labelStyle: TextStyle(color: Utility().getUserHealthData().nephroPathy == true ? Colors.blue : Colors.grey)),
                       onTap: () async {
                         DateTime? pickedDate = await showDatePicker(
                             context: context,
@@ -325,7 +325,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                             child: Padding(
                               padding:
                               const EdgeInsets.only(left: 10, right: 10),
-                              child: DropdownButton(
+                              child: DropdownButtonHideUnderline(child: DropdownButton(
                                 value: Utility().getUserHealthData().retinopthy.toString(),
                                 icon: const Icon(Icons.keyboard_arrow_down),
                                 isExpanded: true,
@@ -352,7 +352,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                         });
                                       });
                                 },
-                              ),
+                              )),
                             )))
                   ]),
                 )),
@@ -366,7 +366,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                       controller: retinoController,
                       readOnly: true,
                       enabled: Utility().getUserHealthData().retinopthy,
-                      decoration: InputDecoration(labelText: 'Retinopathy detected date'),
+                      decoration: InputDecoration(labelText: 'Retinopathy detected date',labelStyle: TextStyle(color: Utility().getUserHealthData().retinopthy == true ? Colors.blue : Colors.grey)),
                       onTap: () async {
                         DateTime? pickedDate = await showDatePicker(
                             context: context,
@@ -413,7 +413,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                             child: Padding(
                               padding:
                               const EdgeInsets.only(left: 10, right: 10),
-                              child: DropdownButton(
+                              child: DropdownButtonHideUnderline(child: DropdownButton(
                                 value: Utility().getUserHealthData().cardioPathy.toString(),
                                 icon: const Icon(Icons.keyboard_arrow_down),
                                 isExpanded: true,
@@ -440,7 +440,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                         });
                                       });
                                 },
-                              ),
+                              )),
                             )))
                   ]),
                 )),
@@ -454,7 +454,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                       controller: cardioController,
                       readOnly: true,
                       enabled: Utility().getUserHealthData().cardioPathy,
-                      decoration: InputDecoration(labelText: 'Cardiopathy detected date'),
+                      decoration: InputDecoration(labelText: 'Cardiopathy detected date',labelStyle: TextStyle(color: Utility().getUserHealthData().cardioPathy == true ? Colors.blue : Colors.grey)),
                       onTap: () async {
                         DateTime? pickedDate = await showDatePicker(
                             context: context,
@@ -501,7 +501,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                             child: Padding(
                               padding:
                               const EdgeInsets.only(left: 10, right: 10),
-                              child: DropdownButton(
+                              child: DropdownButtonHideUnderline(child: DropdownButton(
                                 value: Utility().getUserHealthData().neuropathy.toString(),
                                 icon: const Icon(Icons.keyboard_arrow_down),
                                 isExpanded: true,
@@ -528,7 +528,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                         });
                                       });
                                 },
-                              ),
+                              )),
                             )))
                   ]),
                 )),
@@ -542,7 +542,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                       controller: neuroController,
                       readOnly: true,
                       enabled: Utility().getUserHealthData().neuropathy,
-                      decoration: InputDecoration(labelText: 'Neuropathy detected date'),
+                      decoration: InputDecoration(labelText: 'Neuropathy detected date',labelStyle: TextStyle(color: Utility().getUserHealthData().neuropathy == true ? Colors.blue : Colors.grey)),
                       onTap: () async {
                         DateTime? pickedDate = await showDatePicker(
                             context: context,

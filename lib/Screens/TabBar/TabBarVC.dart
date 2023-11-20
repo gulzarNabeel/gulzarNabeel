@@ -125,8 +125,10 @@ class _TabBarVCState extends State<TabBarVC>
           floatingActionButton: new FloatingActionButton(
             onPressed: (){},
             tooltip: 'Increment',
-            child: new Icon(Icons.add),
-            elevation: 0,
+            child: new Icon(Icons.add,color: Colors.white),
+            backgroundColor: Colors.blue,
+            elevation: 10,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           bottomNavigationBar: BottomNavigationBar(

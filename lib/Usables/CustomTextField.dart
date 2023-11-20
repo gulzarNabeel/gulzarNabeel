@@ -35,13 +35,15 @@ class CustomTextField extends StatelessWidget {
       textCapitalization: textType == TextInputType.name ? TextCapitalization.words : TextCapitalization.none,
       keyboardType: textType,
       enabled: TFediitable,
+      cursorColor: Colors.blue,
       inputFormatters: (textType == TextInputType.phone) ? [
         FilteringTextInputFormatter.allow(RegExp("[0-9]")),
         LengthLimitingTextInputFormatter(10), // Limit to 10 digits
         _PhoneNumberFormatter(), // Custom formatter for phone numbers
       ] : [],
       decoration: InputDecoration(
-        labelText: titleText
+        labelText: titleText,
+        labelStyle: TextStyle(color: Colors.blue)
       ),
     );
     return Expanded(

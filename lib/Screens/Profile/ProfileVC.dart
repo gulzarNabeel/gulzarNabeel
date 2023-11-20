@@ -274,7 +274,7 @@ class _ProfilePageState extends State<ProfileVC> {
                             child: Padding(
                               padding:
                                   const EdgeInsets.only(left: 10, right: 10),
-                              child: DropdownButton(
+                              child: DropdownButtonHideUnderline(child: DropdownButton(
                                 value: CurrentUserGender.toString(),
                                 icon: const Icon(Icons.keyboard_arrow_down),
                                 isExpanded: true,
@@ -293,7 +293,7 @@ class _ProfilePageState extends State<ProfileVC> {
                                     initState();
                                   });
                                 },
-                              ),
+                              )),
                             )))
                   ]),
                 )),
@@ -303,7 +303,7 @@ class _ProfilePageState extends State<ProfileVC> {
               width: 250,
               decoration: BoxDecoration(
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-              child: ElevatedButton(
+              child: TextButton(
                 onPressed: () {
                   updateProfile();
                 },
