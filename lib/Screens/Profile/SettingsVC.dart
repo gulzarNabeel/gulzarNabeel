@@ -58,7 +58,7 @@ class _SettingsVCState extends State<SettingsVC> {
                               child: Padding(
                                 padding:
                                 const EdgeInsets.only(left: 10, right: 10),
-                                child: DropdownButton(
+                                child: DropdownButtonHideUnderline(child: DropdownButton(
                                   value: Utility().getUserData().glucoseUnit.unit,
                                   icon: const Icon(Icons.keyboard_arrow_down),
                                   isExpanded: true,
@@ -82,7 +82,7 @@ class _SettingsVCState extends State<SettingsVC> {
                                           });
                                         });
                                   },
-                                ),
+                                )),
                               )))
                     ]),
                   )),
@@ -108,7 +108,7 @@ class _SettingsVCState extends State<SettingsVC> {
                               child: Padding(
                                 padding:
                                 const EdgeInsets.only(left: 10, right: 10),
-                                child: DropdownButton(
+                                child: DropdownButtonHideUnderline(child: DropdownButton(
                                   value: Utility().getUserData().pressureUnit.unit,
                                   icon: const Icon(Icons.keyboard_arrow_down),
                                   isExpanded: true,
@@ -132,7 +132,7 @@ class _SettingsVCState extends State<SettingsVC> {
                                           });
                                         });
                                   },
-                                ),
+                                )),
                               )))
                     ]),
                   )),
@@ -158,7 +158,7 @@ class _SettingsVCState extends State<SettingsVC> {
                               child: Padding(
                                 padding:
                                 const EdgeInsets.only(left: 10, right: 10),
-                                child: DropdownButton(
+                                child: DropdownButtonHideUnderline(child: DropdownButton(
                                   value: Utility().getUserData().foodUnit.unit,
                                   icon: const Icon(Icons.keyboard_arrow_down),
                                   isExpanded: true,
@@ -182,7 +182,7 @@ class _SettingsVCState extends State<SettingsVC> {
                                           });
                                         });
                                   },
-                                ),
+                                )),
                               )))
                     ]),
                   )),
@@ -208,7 +208,7 @@ class _SettingsVCState extends State<SettingsVC> {
                               child: Padding(
                                 padding:
                                 const EdgeInsets.only(left: 10, right: 10),
-                                child: DropdownButton(
+                                child: DropdownButtonHideUnderline(child: DropdownButton(
                                   value: Utility().getUserData().weightUnit.unit,
                                   icon: const Icon(Icons.keyboard_arrow_down),
                                   isExpanded: true,
@@ -232,7 +232,7 @@ class _SettingsVCState extends State<SettingsVC> {
                                           });
                                         });
                                   },
-                                ),
+                                )),
                               )))
                     ]),
                   )),
@@ -258,7 +258,7 @@ class _SettingsVCState extends State<SettingsVC> {
                               child: Padding(
                                 padding:
                                 const EdgeInsets.only(left: 10, right: 10),
-                                child: DropdownButton(
+                                child: DropdownButtonHideUnderline(child: DropdownButton(
                                   value: Utility().getUserData().heightUnit.unit,
                                   icon: const Icon(Icons.keyboard_arrow_down),
                                   isExpanded: true,
@@ -282,7 +282,7 @@ class _SettingsVCState extends State<SettingsVC> {
                                           });
                                         });
                                   },
-                                ),
+                                )),
                               )))
                     ]),
                   ))
