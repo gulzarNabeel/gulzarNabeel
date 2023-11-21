@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:diabetes/Models/UserLocal.dart';
+import 'package:diabetes/Usables/ProgressIndicatorLocal.dart';
 import 'package:diabetes/Usables/RemoteConfigFirebase.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:flutter/material.dart';
@@ -71,11 +72,13 @@ class _SettingsVCState extends State<SettingsVC> {
                                   }).toList(),
                                   hint: Text('Glucose Unit'),
                                   onChanged: (value) {
+                                    ProgressIndicatorLocal().showAlert(context);
                                     UserLocal currentUser = Utility().getUserData();
                                     currentUser.glucoseUnit = totalUnits.glucose.firstWhere((element) => element.unit == value);
                                     currentUser.updateData();
                                     Timer.periodic(const Duration(seconds: 1),
                                         (timer) async {
+                                          ProgressIndicatorLocal().hideAlert(context);
                                           timer.cancel();
                                           setState(() {
                                             initState();
@@ -121,11 +124,13 @@ class _SettingsVCState extends State<SettingsVC> {
                                   }).toList(),
                                   hint: Text('Pressure Unit'),
                                   onChanged: (value) {
+                                    ProgressIndicatorLocal().showAlert(context);
                                     UserLocal currentUser = Utility().getUserData();
                                     currentUser.pressureUnit = totalUnits.pressure.firstWhere((element) => element.unit == value);
                                     currentUser.updateData();
                                     Timer.periodic(const Duration(seconds: 1),
                                             (timer) async {
+                                              ProgressIndicatorLocal().hideAlert(context);
                                               timer.cancel();
                                           setState(() {
                                             initState();
@@ -171,11 +176,13 @@ class _SettingsVCState extends State<SettingsVC> {
                                   }).toList(),
                                   hint: Text('Food Unit'),
                                   onChanged: (value) {
+                                    ProgressIndicatorLocal().showAlert(context);
                                     UserLocal currentUser = Utility().getUserData();
                                     currentUser.foodUnit = totalUnits.food.firstWhere((element) => element.unit == value);
                                     currentUser.updateData();
                                     Timer.periodic(const Duration(seconds: 1),
                                             (timer) async {
+                                              ProgressIndicatorLocal().hideAlert(context);
                                               timer.cancel();
                                       setState(() {
                                             initState();
@@ -221,11 +228,13 @@ class _SettingsVCState extends State<SettingsVC> {
                                   }).toList(),
                                   hint: Text('Weight Unit'),
                                   onChanged: (value) {
+                                    ProgressIndicatorLocal().showAlert(context);
                                     UserLocal currentUser = Utility().getUserData();
                                     currentUser.weightUnit = totalUnits.weight.firstWhere((element) => element.unit == value);
                                     currentUser.updateData();
                                     Timer.periodic(const Duration(seconds: 1),
                                             (timer) async {
+                                              ProgressIndicatorLocal().hideAlert(context);
                                               timer.cancel();
                                       setState(() {
                                             initState();
@@ -271,11 +280,13 @@ class _SettingsVCState extends State<SettingsVC> {
                                   }).toList(),
                                   hint: Text('Height Unit'),
                                   onChanged: (value) {
+                                    ProgressIndicatorLocal().showAlert(context);
                                     UserLocal currentUser = Utility().getUserData();
                                     currentUser.heightUnit = totalUnits.height.firstWhere((element) => element.unit == value);
                                     currentUser.updateData();
                                     Timer.periodic(const Duration(seconds: 1),
                                             (timer) async {
+                                              ProgressIndicatorLocal().hideAlert(context);
                                               timer.cancel();
                                       setState(() {
                                             initState();

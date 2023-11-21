@@ -6,6 +6,7 @@ import 'package:diabetes/Models/UserLocal.dart';
 import 'package:diabetes/Screens/TabBar/TabBarVC.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:diabetes/Usables/DisplayPictureScreen.dart';
+import 'package:diabetes/Usables/ProgressIndicatorLocal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -376,6 +377,7 @@ class _ProfilePageState extends State<ProfileVC> {
                 false)
             .showAlert(context);
       } else {
+        ProgressIndicatorLocal().showAlert(context);
         AuthHandler().sendOTP(context, Utility().getUserData().countryCode,
             Utility().getUserData().phoneNumber, 'Update', 'Cancel', () {
           showAlertDialog();
@@ -398,6 +400,7 @@ class _ProfilePageState extends State<ProfileVC> {
   }
 
   showAlertDialog() async {
+    ProgressIndicatorLocal().showAlert(context);
     var currentUser = Utility().getUserData();
     FirebaseAuth auth = FirebaseAuth.instance;
     if (currentUser.name !=
@@ -505,6 +508,7 @@ class _ProfilePageState extends State<ProfileVC> {
       Timer.periodic(const Duration(seconds: 3), (timer) {
         if (widget.Signup == true) {
           timer.cancel();
+          ProgressIndicatorLocal().hideAlert(context);
           Navigator.push(
               context,
               CupertinoPageRoute(
@@ -536,6 +540,7 @@ class _ProfilePageState extends State<ProfileVC> {
                 imageFile = null;
                 timer.cancel();
                 initState();
+                ProgressIndicatorLocal().hideAlert(context);
                 if (widget.Signup == true) {
                   Navigator.push(
                       context,

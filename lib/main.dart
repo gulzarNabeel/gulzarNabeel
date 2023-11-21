@@ -62,6 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   timerEvent() {
+    RemoteConfigFirebase().getUnits();
     Timer.periodic(const Duration(seconds: 3), (timer) async {
       timer.cancel();
       FirebaseAuth auth = FirebaseAuth.instance;

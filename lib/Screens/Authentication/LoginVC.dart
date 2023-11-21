@@ -3,6 +3,7 @@ import 'package:diabetes/Models/UserLocal.dart';
 import 'package:diabetes/Screens/TabBar/TabBarVC.dart';
 import 'package:diabetes/Screens/Profile/ProfileVC.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
+import 'package:diabetes/Usables/ProgressIndicatorLocal.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -95,6 +96,7 @@ class _LoginPageState extends State<LoginVC> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
                   child: TextButton(
                     onPressed: () {
+                      ProgressIndicatorLocal().showAlert(context);
                       sendOTP(context,_selectedCountry?.callingCode ?? "", textFieldPhone.textFieldIn.controller?.text ?? "");
                     },
                     child: Text(
@@ -116,12 +118,14 @@ class _LoginPageState extends State<LoginVC> {
   }
 
   getFirestoreData(BuildContext context, String countryCode, String phone){
+    ProgressIndicatorLocal().showAlert(context);
     CollectionReference users = FirebaseFirestore.instance.collection('Users');
     FirebaseAuth auth = FirebaseAuth.instance;
     users.doc(auth.currentUser?.uid).get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
         Utility().saveUserData(data);
+        ProgressIndicatorLocal().hideAlert(context);
         if (data["name"].toString().length > 0) {
           Navigator.push(
             context,

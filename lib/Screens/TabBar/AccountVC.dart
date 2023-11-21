@@ -4,6 +4,7 @@ import 'package:diabetes/Screens/Profile/SettingsVC.dart';
 import 'package:diabetes/Screens/Profile/ProfileVC.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:diabetes/Usables/AuthHandler.dart';
+import 'package:diabetes/Usables/ProgressIndicatorLocal.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -158,7 +159,9 @@ class _AccountVCState extends State<AccountVC> {
             case OptionAccount.Logout:
               AlertDialogLocal("Logout", 'Are you sure to logout from account?',
                       'Yes', 'No', () async {
+                    ProgressIndicatorLocal().showAlert(context);
                 await FirebaseAuth.instance.signOut().then((value) {
+                  ProgressIndicatorLocal().hideAlert(context);
                   widget.onClose();
                 });
               }, () {}, false, '', true)
@@ -170,12 +173,14 @@ class _AccountVCState extends State<AccountVC> {
                       'Are you sure to Delete account?\n\n\nNote:Account can not be recovered once it is deleted',
                       'Yes',
                       'No', () async {
+                ProgressIndicatorLocal().showAlert(context);
                 AuthHandler().sendOTP(
                     context,
                     Utility().getUserData().countryCode,
                     Utility().getUserData().phoneNumber,
                     'Delete',
                     'Keep Account', () {
+                  ProgressIndicatorLocal().showAlert(context);
                   CollectionReference users =
                       FirebaseFirestore.instance.collection('Users');
                   FirebaseAuth auth = FirebaseAuth.instance;
@@ -183,8 +188,10 @@ class _AccountVCState extends State<AccountVC> {
                     await FirebaseAuth.instance.currentUser
                         ?.delete()
                         .then((value) {
+                      ProgressIndicatorLocal().hideAlert(context);
                       widget.onClose();
                     }).catchError((error) {
+                      ProgressIndicatorLocal().hideAlert(context);
                       AuthHandler.generateExceptionMessage(
                           AuthHandler.handleException(error));
                     });

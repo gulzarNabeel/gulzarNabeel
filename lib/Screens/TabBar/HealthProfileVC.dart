@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:diabetes/Models/HealthProfile.dart';
+import 'package:diabetes/Usables/ProgressIndicatorLocal.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -74,6 +75,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                 }).toList(),
                                 hint: Text('Type of Diabetes'),
                                 onChanged: (value) {
+                                  ProgressIndicatorLocal().showAlert(context);
                                   HealthProfile currentUser = Utility().getUserHealthData();
                                   currentUser.type = DiabetesType.values.firstWhere((element) => element.name == value);
                                   if (currentUser.type == DiabetesType.None) {
@@ -83,6 +85,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                   Timer.periodic(const Duration(seconds: 1),
                                           (timer) async {
                                         timer.cancel();
+                                        ProgressIndicatorLocal().hideAlert(context);
                                         setState(() {
                                           initState();
                                         });
@@ -161,6 +164,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                 }).toList(),
                                 hint: Text('Hypertension'),
                                 onChanged: (value) {
+                                  ProgressIndicatorLocal().showAlert(context);
                                   String value2 = (value as String) ?? '';
                                   HealthProfile currentUser = Utility().getUserHealthData();
                                   currentUser.hyperTension = value2.parseBool();
@@ -170,6 +174,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                   currentUser.updateData();
                                   Timer.periodic(const Duration(seconds: 1),
                                           (timer) async {
+                                            ProgressIndicatorLocal().hideAlert(context);
                                         timer.cancel();
                                         setState(() {
                                           initState();
@@ -249,6 +254,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                 }).toList(),
                                 hint: Text('Nephropathy'),
                                 onChanged: (value) {
+                                  ProgressIndicatorLocal().showAlert(context);
                                   String value2 = (value as String) ?? '';
                                   HealthProfile currentUser = Utility().getUserHealthData();
                                   currentUser.nephroPathy = value2.parseBool();
@@ -258,6 +264,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                   currentUser.updateData();
                                   Timer.periodic(const Duration(seconds: 1),
                                           (timer) async {
+                                            ProgressIndicatorLocal().hideAlert(context);
                                         timer.cancel();
                                         setState(() {
                                           initState();
@@ -337,6 +344,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                 }).toList(),
                                 hint: Text('Retinopathy'),
                                 onChanged: (value) {
+                                  ProgressIndicatorLocal().showAlert(context);
                                   String value2 = (value as String) ?? '';
                                   HealthProfile currentUser = Utility().getUserHealthData();
                                   currentUser.retinopthy = value2.parseBool();
@@ -346,6 +354,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                   currentUser.updateData();
                                   Timer.periodic(const Duration(seconds: 1),
                                           (timer) async {
+                                            ProgressIndicatorLocal().hideAlert(context);
                                         timer.cancel();
                                         setState(() {
                                           initState();
@@ -425,6 +434,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                 }).toList(),
                                 hint: Text('Cardiopathy'),
                                 onChanged: (value) {
+                                  ProgressIndicatorLocal().showAlert(context);
                                   String value2 = (value as String) ?? '';
                                   HealthProfile currentUser = Utility().getUserHealthData();
                                   currentUser.cardioPathy = value2.parseBool();
@@ -434,6 +444,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                   currentUser.updateData();
                                   Timer.periodic(const Duration(seconds: 1),
                                           (timer) async {
+                                            ProgressIndicatorLocal().hideAlert(context);
                                         timer.cancel();
                                         setState(() {
                                           initState();
@@ -513,6 +524,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                 }).toList(),
                                 hint: Text('Neuropathy'),
                                 onChanged: (value) {
+                                  ProgressIndicatorLocal().showAlert(context);
                                   String value2 = (value as String) ?? '';
                                   HealthProfile currentUser = Utility().getUserHealthData();
                                   currentUser.neuropathy = value2.parseBool();
@@ -522,6 +534,7 @@ class _HealthProfileVCState extends State<HealthProfileVC> {
                                   currentUser.updateData();
                                   Timer.periodic(const Duration(seconds: 1),
                                           (timer) async {
+                                            ProgressIndicatorLocal().hideAlert(context);
                                         timer.cancel();
                                         setState(() {
                                           initState();

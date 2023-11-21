@@ -1,4 +1,5 @@
 import 'package:diabetes/Usables/CustomTextField.dart';
+import 'package:diabetes/Usables/ProgressIndicatorLocal.dart';
 import 'package:flutter/material.dart';
 
 class AlertDialogLocal extends StatelessWidget {
@@ -69,6 +70,7 @@ class AlertDialogLocal extends StatelessWidget {
   }
 
   showAlert(BuildContext context) {
+    ProgressIndicatorLocal().showAlert(context);
     showDialog(
       context: context,
       builder: (BuildContext context) {
