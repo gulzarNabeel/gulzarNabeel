@@ -92,7 +92,6 @@ class Utility {
     }
     this.prefs?.setStringList("userData", arrayString).whenComplete((){});
   }
-
   UserLocal getUserData() {
     List<String>? data = this.prefs?.getStringList('userData') as List<String>?;
     UserLocal myData = UserLocal(data?[0] ?? '', data?[1] ?? '', data?[2] ?? '', data?[3] ?? '', data?[4] ?? '', ((data?[5] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd – hh:mm:ss').parse(data?[5] ?? '') : DateTime.now()),((data?[6] ?? '').length > 0 ? new DateFormat('yyyy-MM-dd').parse(data?[6] ?? '') : null),(data?[7] ?? '').length > 0 ? Gender.values.firstWhere((element) => element.toString() == 'Gender.' + (data?[7] ?? '')) : null,Units({"unit" : (data?[8] ?? 'mg/dL').length > 0 ? (data?[8] ?? 'mg/dL') : 'mg/dL'}),Units({'unit' : (data?[9] ?? 'mmHg').length > 0 ? (data?[9] ?? 'mmHg') : 'mmHg'}),Units({'unit' : (data?[10] ?? 'grams').length > 0 ? (data?[10] ?? 'grams') :  'grams'}),Units({'unit' : (data?[11] ?? 'kg').length > 0 ? (data?[11] ?? 'kg') : 'kg'}),Units({'unit' : (data?[12] ?? 'cm').length > 0 ? (data?[12] ?? 'cm') : 'cm'}));

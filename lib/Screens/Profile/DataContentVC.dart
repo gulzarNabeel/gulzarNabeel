@@ -612,7 +612,7 @@ class PrivacyAndPolicyBody extends StatelessWidget {
                     FormattedStringWithLink(
                         bold: "",
                         remaining: 'or ',
-                        NumberIn: '', urlString: 'mailto://gulzar.nabeel@gmail.com', link: 'gulzar.nabeel@gmail.com'),
+                        NumberIn: '', urlString: 'mailto:gulzar.nabeel@gmail.com', link: 'gulzar.nabeel@gmail.com'),
                   ],
                 ))),
         Padding(

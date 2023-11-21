@@ -169,7 +169,7 @@ class _SettingsVCState extends State<SettingsVC> {
                                       child: Text(dropdownvalue.unit),
                                     );
                                   }).toList(),
-                                  hint: Text('Glucose Unit'),
+                                  hint: Text('Food Unit'),
                                   onChanged: (value) {
                                     UserLocal currentUser = Utility().getUserData();
                                     currentUser.foodUnit = totalUnits.food.firstWhere((element) => element.unit == value);

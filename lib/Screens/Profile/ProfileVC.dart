@@ -297,20 +297,23 @@ class _ProfilePageState extends State<ProfileVC> {
                             )))
                   ]),
                 )),
-
-            Container(
-              height: 50,
-              width: 250,
-              decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-              child: TextButton(
-                onPressed: () {
-                  updateProfile();
-                },
-                child: const Text('Update',
-                    style: TextStyle(color: Colors.white, fontSize: 20)),
-              ),
-            ),
+            Padding(
+                padding: const EdgeInsets.only(
+                    left: 20, top: 0, right: 20, bottom: 40),
+                child: Container(
+                  height: 50,
+                  width: 250,
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: TextButton(
+                    onPressed: () {
+                      updateProfile();
+                    },
+                    child: const Text('Update',
+                        style: TextStyle(color: Colors.white, fontSize: 20)),
+                  ),
+                ))
           ],
         ),
       ),
