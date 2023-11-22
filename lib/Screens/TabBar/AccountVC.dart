@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diabetes/Screens/Profile/DataContentVC.dart';
 import 'package:diabetes/Screens/Profile/SettingsVC.dart';
@@ -108,7 +109,10 @@ class _AccountVCState extends State<AccountVC> {
                 ),
                 child: ClipOval(
                   child: Utility().getUserData().profilePictureUrl.length > 0
-                      ? Image.network(Utility().getUserData().profilePictureUrl)
+                      ? CachedNetworkImage(imageUrl: Utility().getUserData().profilePictureUrl,
+                      placeholder:(context,url) => Image(image: AssetImage('Assets/appicon.png'),
+                        // errorBuilder: (context,url,error),
+                      ))
                       : Image(image: AssetImage('Assets/appicon.png')),
                 ),
               ),
@@ -159,7 +163,7 @@ class _AccountVCState extends State<AccountVC> {
             case OptionAccount.Logout:
               AlertDialogLocal("Logout", 'Are you sure to logout from account?',
                       'Yes', 'No', () async {
-                    ProgressIndicatorLocal().showAlert(context);
+                ProgressIndicatorLocal().showAlert(context);
                 await FirebaseAuth.instance.signOut().then((value) {
                   ProgressIndicatorLocal().hideAlert(context);
                   widget.onClose();

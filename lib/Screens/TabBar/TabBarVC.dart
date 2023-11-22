@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ffi';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:diabetes/Screens/TabBar/DevicesVC.dart';
 import 'package:diabetes/Screens/Profile/ProfileVC.dart';
 import 'package:diabetes/Screens/TabBar/HealthProfileVC.dart';
@@ -47,6 +48,7 @@ class _TabBarVCState extends State<TabBarVC>
       Pair("", AccountVC(onClose: (){
         if (FirebaseAuth.instance.currentUser == null) {
           widget.onClose();
+          Navigator.pop(context);
         }}))
     ];
     routeToPage(_routeTo);
@@ -105,7 +107,10 @@ class _TabBarVCState extends State<TabBarVC>
                 ),
                 child: ClipOval(
                   child: Utility().getUserData().profilePictureUrl.length > 0
-                      ? Image.network(Utility().getUserData().profilePictureUrl)
+                      ? CachedNetworkImage(imageUrl: Utility().getUserData().profilePictureUrl,
+                      placeholder:(context,url) => Image(image: AssetImage('Assets/appicon.png'),
+                        // errorBuilder: (context,url,error),
+                      ))
                       : Image(image: AssetImage('Assets/appicon.png')),
                 ),
               ),

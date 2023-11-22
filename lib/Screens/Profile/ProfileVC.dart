@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_calling_code_picker/picker.dart';
 import 'package:diabetes/Models/UserLocal.dart';
@@ -85,12 +86,24 @@ class _ProfilePageState extends State<ProfileVC> {
           _countryText = Text(Utility().getUserData().countryCode,
               style: const TextStyle(color: Colors.blue, fontSize: 20));
         }
+        var currentUser = Utility().getUserData();
+        if (currentUser.email !=  (FirebaseAuth.instance.currentUser?.email ?? '')) {
+          if ((FirebaseAuth.instance.currentUser?.email ?? '').length > 0) {
+            currentUser.email = FirebaseAuth.instance.currentUser?.email ?? '';
+          }
+        }
+        if (currentUser.name !=  (FirebaseAuth.instance.currentUser?.displayName ?? '')) {
+          if ((FirebaseAuth.instance.currentUser?.displayName ?? '').length > 0) {
+            currentUser.name = FirebaseAuth.instance.currentUser?.displayName ?? '';
+          }
+        }
         textFieldPhone.textFieldIn.controller?.text =
-            Utility().getUserData().phoneNumber;
+            currentUser.phoneNumber;
         textFieldName.textFieldIn.controller?.text =
-            Utility().getUserData().name;
+            currentUser.name;
         textFieldEmail.textFieldIn.controller?.text =
-            Utility().getUserData().email;
+            currentUser.email;
+        currentUser.updateData();
       }
     });
   }
@@ -149,8 +162,10 @@ class _ProfilePageState extends State<ProfileVC> {
                             ? Image.file(imageFile!)
                             : Utility().getUserData().profilePictureUrl.length >
                                     0
-                                ? Image.network(
-                                    Utility().getUserData().profilePictureUrl)
+                                ? CachedNetworkImage(imageUrl: Utility().getUserData().profilePictureUrl,
+                          placeholder:(context,url) => Image(image: AssetImage('Assets/appicon.png'),
+                            // errorBuilder: (context,url,error),
+                        ))
                                 : Image(
                                     image: AssetImage('Assets/appicon.png')),
                       ),
@@ -465,7 +480,6 @@ class _ProfilePageState extends State<ProfileVC> {
       uploadFile();
     }
   }
-
   /// Get from gallery
   _getFromGallery() async {
     final pickedFile =
@@ -500,6 +514,7 @@ class _ProfilePageState extends State<ProfileVC> {
   }
 
   Future uploadFile() async {
+    ProgressIndicatorLocal().showAlert(context);
     var currentUser = Utility().getUserData();
     currentUser.dateOfBirth = dob;
     currentUser.gender = CurrentUserGender;
@@ -515,6 +530,7 @@ class _ProfilePageState extends State<ProfileVC> {
                   builder: (context) => TabBarVC(onClose: () {
                         if (FirebaseAuth.instance.currentUser == null) {
                           widget.onClose();
+                          Navigator.pop(context);
                         }
                       })));
         } else {
@@ -548,6 +564,7 @@ class _ProfilePageState extends State<ProfileVC> {
                           builder: (context) => TabBarVC(onClose: () {
                                 if (FirebaseAuth.instance.currentUser == null) {
                                   widget.onClose();
+                                  Navigator.pop(context);
                                 }
                               })));
                 } else {
