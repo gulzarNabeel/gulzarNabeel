@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diabetes/Models/HealthProfile.dart';
+import 'package:diabetes/Models/UserLocal.dart';
 import 'package:diabetes/Screens/TabBar/TabBarVC.dart';
 import 'package:diabetes/Screens/Profile/ProfileVC.dart';
 import 'package:diabetes/Usables/RemoteConfigFirebase.dart';
@@ -100,6 +101,9 @@ class _MyHomePageState extends State<MyHomePage> {
           }
         });
       }else {
+        var user = UserLocal('', '', '', '', '', DateTime.now(), null, null,
+            Units({}), Units({}), Units({}), Units({}), Units({}));
+        user.updateData();
         Navigator.push(
           context,
           CupertinoPageRoute(

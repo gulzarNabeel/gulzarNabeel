@@ -1,11 +1,16 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:diabetes/Models/HealthProfile.dart';
+import 'package:diabetes/Models/UserLocal.dart';
 import 'package:diabetes/Screens/Profile/DataContentVC.dart';
 import 'package:diabetes/Screens/Profile/SettingsVC.dart';
 import 'package:diabetes/Screens/Profile/ProfileVC.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:diabetes/Usables/AuthHandler.dart';
 import 'package:diabetes/Usables/ProgressIndicatorLocal.dart';
+import 'package:diabetes/Usables/RemoteConfigFirebase.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -125,7 +130,7 @@ class _AccountVCState extends State<AccountVC> {
                         padding: EdgeInsets.all(0),
                         child: Text('${Utility().getUserData().name}',
                             style: const TextStyle(
-                                color: Colors.white, fontSize: 22),maxLines: 3,)),
+                                color: Colors.white, fontSize: 20),maxLines: 3,)),
                     Text(Utility().getUserData().email,
                         style: const TextStyle(color: Colors.white)),
                     Text(
@@ -163,10 +168,42 @@ class _AccountVCState extends State<AccountVC> {
             case OptionAccount.Logout:
               AlertDialogLocal("Logout", 'Are you sure to logout from account?',
                       'Yes', 'No', () async {
+                    var user = UserLocal(
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    DateTime.now(),
+                    null,
+                    null,
+                    Units({}),
+                    Units({}),
+                    Units({}),
+                    Units({}),
+                    Units({}));
+                user.updateData();
+                var healthProfile = HealthProfile(
+                    DiabetesType.None,
+                    null,
+                    false,
+                    null,
+                    false,
+                    null,
+                    false,
+                    null,
+                    false,
+                    null,
+                    false,
+                    null);
+                healthProfile.updateData();
                 ProgressIndicatorLocal().showAlert(context);
-                await FirebaseAuth.instance.signOut().then((value) {
-                  ProgressIndicatorLocal().hideAlert(context);
-                  widget.onClose();
+                Timer.periodic(const Duration(seconds: 2), (timer) async {
+                  timer.cancel();
+                  await FirebaseAuth.instance.signOut().then((value) {
+                    ProgressIndicatorLocal().hideAlert(context);
+                    widget.onClose();
+                  });
                 });
               }, () {}, false, '', true)
                   .showAlert(context);
@@ -189,15 +226,19 @@ class _AccountVCState extends State<AccountVC> {
                       FirebaseFirestore.instance.collection('Users');
                   FirebaseAuth auth = FirebaseAuth.instance;
                   users.doc(auth.currentUser?.uid).delete().then((value) async {
-                    await FirebaseAuth.instance.currentUser
-                        ?.delete()
-                        .then((value) {
-                      ProgressIndicatorLocal().hideAlert(context);
-                      widget.onClose();
-                    }).catchError((error) {
-                      ProgressIndicatorLocal().hideAlert(context);
-                      AuthHandler.generateExceptionMessage(
-                          AuthHandler.handleException(error));
+                    CollectionReference users2 =
+                    FirebaseFirestore.instance.collection('UsersHealth');
+                    users2.doc(auth.currentUser?.uid).delete().then((value) async {
+                      await FirebaseAuth.instance.currentUser
+                          ?.delete()
+                          .then((value) {
+                        ProgressIndicatorLocal().hideAlert(context);
+                        widget.onClose();
+                      }).catchError((error) {
+                        ProgressIndicatorLocal().hideAlert(context);
+                        AuthHandler.generateExceptionMessage(
+                            AuthHandler.handleException(error));
+                      });
                     });
                   });
                 });

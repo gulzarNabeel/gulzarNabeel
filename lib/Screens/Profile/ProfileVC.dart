@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_calling_code_picker/picker.dart';
+import 'package:diabetes/Models/HealthProfile.dart';
 import 'package:diabetes/Models/UserLocal.dart';
 import 'package:diabetes/Screens/TabBar/TabBarVC.dart';
 import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:diabetes/Usables/DisplayPictureScreen.dart';
 import 'package:diabetes/Usables/ProgressIndicatorLocal.dart';
+import 'package:diabetes/Usables/RemoteConfigFirebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -121,9 +123,19 @@ class _ProfilePageState extends State<ProfileVC> {
                   icon: const Icon(Icons.logout),
                   tooltip: 'Logout',
                   onPressed: () async {
-                    await FirebaseAuth.instance.signOut().then((value) {
-                      widget.onClose();
-                      Navigator.pop(context);
+                    var user = UserLocal('', '', '', '', '', DateTime.now(), null, null,
+                        Units({}), Units({}), Units({}), Units({}), Units({}));
+                    user.updateData();
+                    var healthProfile = HealthProfile(DiabetesType.None, null, false, null, false, null, false, null, false, null, false, null);
+                    healthProfile.updateData();
+                    ProgressIndicatorLocal().showAlert(context);
+                    Timer.periodic(const Duration(seconds: 2), (timer) async {
+                      timer.cancel();
+                      await FirebaseAuth.instance.signOut().then((value) {
+                        ProgressIndicatorLocal().hideAlert(context);
+                        widget.onClose();
+                        Navigator.pop(context);
+                      });
                     });
                   },
                 ),
