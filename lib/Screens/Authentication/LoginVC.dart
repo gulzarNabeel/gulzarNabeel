@@ -135,13 +135,24 @@ class _LoginPageState extends State<LoginVC> {
                 })),
           );
         }else{
-          Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (context) => ProfileVC(title: 'Flutter Profile Page', Signup: true, onClose: () {
+          var userCurrent = Utility().getUserData();
+          userCurrent.countryCode = countryCode;
+          userCurrent.phoneNumber = phone;
+          userCurrent.name = auth.currentUser?.displayName ?? '';
+          userCurrent.profilePictureUrl = auth.currentUser?.photoURL ?? '';
+          userCurrent.email = auth.currentUser?.email ?? '';
+          userCurrent.creationDate = auth.currentUser?.metadata?.creationTime ?? DateTime.now();
+          userCurrent.updateData().then((_) {
+            print('No profile available' + countryCode + phone);
+            print(Utility().getUserData().countryCode + Utility().getUserData().phoneNumber);
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) => ProfileVC(title: 'Flutter Profile Page', Signup: true, onClose: () {
                     textFieldPhone.textFieldIn.controller?.text = '';
-                })),
-          );
+                  })),
+            );
+          });
         }
       }else{
         var userCurrent = Utility().getUserData();

@@ -4,7 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:diabetes/Screens/TabBar/DevicesVC.dart';
 import 'package:diabetes/Screens/Profile/ProfileVC.dart';
 import 'package:diabetes/Screens/TabBar/HealthProfileVC.dart';
-import 'package:diabetes/Screens/TabBar/MedicineVC.dart';
+import 'package:diabetes/Screens/TabBar/Medicine/AddMedicineVC.dart';
+import 'package:diabetes/Screens/TabBar/Medicine/MedicineVC.dart';
 import 'package:diabetes/Screens/TabBar/HomeVC.dart';
 import 'package:diabetes/Screens/TabBar/AccountVC.dart';
 import 'package:diabetes/Usables/Utility.dart';
@@ -116,15 +117,34 @@ class _TabBarVCState extends State<TabBarVC>
               ),
             ),
             title: Text(titleText, textAlign: TextAlign.center),
-            actions: _routeTo == 4 ? []
-                : [
+            actions: (_routeTo == 4 || _routeTo == 2)
+                ? []
+                : (_routeTo == 1 || _routeTo == 3)
+                    ? [
+                        IconButton(
+                          icon: const Icon(Icons.add),
+                          tooltip: 'Add',
+                          onPressed: () async {
+                              if (_routeTo == 1) {
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => AddMedicineVC(onClose: () {if (FirebaseAuth.instance.currentUser == null) {
+                                        widget.onClose();
+                                      }})),
+                                );
+                              }
+                          },
+                        )
+                      ]
+                    : [
                     IconButton(
                       icon: const Icon(Icons.refresh),
                       tooltip: 'Refresh',
                       onPressed: () async {
 
                       },
-                    ),
+                    )
                   ],
           ),
           floatingActionButton: new FloatingActionButton(
