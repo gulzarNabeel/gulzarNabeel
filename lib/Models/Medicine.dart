@@ -29,8 +29,8 @@ class Medicine {
     CollectionReference users = FirebaseFirestore.instance.collection('UsersMedicine');
     FirebaseAuth auth = FirebaseAuth.instance;
     String formattedstartDate = DateFormat('yyyy-MM-dd').format(startDate!);
-    String formattedcreatedDate = DateFormat('yyyy-MM-dd').format(createdDate!);
-    String formatedUpdatedDate = DateFormat('yyyy-MM-dd').format(updatedDate!);
+    String formattedcreatedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(createdDate!);
+    String formatedUpdatedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(updatedDate!);
 
     users.add({
       'name': name,
@@ -53,8 +53,8 @@ class Medicine {
     CollectionReference users = FirebaseFirestore.instance.collection('UsersMedicine');
     FirebaseAuth auth = FirebaseAuth.instance;
     String formattedstartDate = DateFormat('yyyy-MM-dd').format(startDate!);
-    String formattedcreatedDate = DateFormat('yyyy-MM-dd').format(createdDate!);
-    String formatedUpdatedDate = DateFormat('yyyy-MM-dd').format(updatedDate!);
+    String formattedcreatedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(createdDate!);
+    String formatedUpdatedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(updatedDate!);
 
     users.doc(id).set({
       'name': name,

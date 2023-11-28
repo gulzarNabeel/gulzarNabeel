@@ -252,10 +252,11 @@ class Utility {
               PeriodRepeat.values.firstWhere((element) => element.name == (data['repeat'] ?? '')) ?? PeriodRepeat.None,
               DateFormat('yyyy-MM-dd').parse(
                   data['startDate'] ?? ''),
-              DateFormat('yyyy-MM-dd').parse(
+              DateFormat('yyyy-MM-dd HH:mm:ss').parse(
                   data['createdDate'] ?? ''),
-              DateFormat('yyyy-MM-dd').parse(
+              DateFormat('yyyy-MM-dd HH:mm:ss').parse(
                   data['updatedDate'] ?? '')));
+          usersMedicines.sort((a,b) => a.updatedDate.compareTo(b.updatedDate));
         }
       }
     });

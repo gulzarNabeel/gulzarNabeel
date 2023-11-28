@@ -44,7 +44,7 @@ class _TabBarVCState extends State<TabBarVC>
   void initState() {
     itemsIn = [
       Pair("", const HomeVC()),
-      Pair("", const MedicineVC()),
+      Pair("", MedicineVC()),
       Pair("", const HealthProfileVC()),
       Pair("", const DevicesVC()),
       Pair("", AccountVC(onClose: (){
@@ -118,16 +118,23 @@ class _TabBarVCState extends State<TabBarVC>
               ),
             ),
             title: Text(titleText, textAlign: TextAlign.center),
-            actions: (_routeTo == 4 || _routeTo == 2 || _routeTo == 1)
+            actions: (_routeTo == 4 || _routeTo == 2)
                 ? []
-                : (_routeTo == 3)
+                : (_routeTo == 1 || _routeTo == 3)
                     ? [
                         IconButton(
                           icon: const Icon(Icons.add),
                           tooltip: 'Add',
                           onPressed: () async {
                               if (_routeTo == 1) {
-
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => AddMedicineVC(onClose: () {
+                                        MedicineVC vc = itemsIn[1].obj;
+                                        vc.initIn();
+                                      }, medicineIn: Medicine('','', '', '', '', '', '', PeriodRepeat.None, DateTime.now(), DateTime.now(), DateTime.now()))),
+                                );
                               }
                           },
                         )
