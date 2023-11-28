@@ -61,4 +61,41 @@ class Medicine {
       Utility().fetchUserMedicineData();
     });
   }
+
+  updateData() async {
+    CollectionReference users = FirebaseFirestore.instance.collection('UsersMedicine');
+    FirebaseAuth auth = FirebaseAuth.instance;
+    String formattedstartDate = DateFormat('yyyy-MM-dd').format(startDate!);
+    String formattedcreatedDate = DateFormat('yyyy-MM-dd').format(createdDate!);
+    String formatedUpdatedDate = DateFormat('yyyy-MM-dd').format(updatedDate!);
+
+    users.doc(id).set({
+      'name': name,
+      'dosageContent': dosageContent,
+      'usedFor': usedFor,
+      'unitMorning': unitMorning,
+      'unitAfterNoon': unitAfterNoon,
+      'unitNight': unitNight,
+      'repeat' : repeat.name,
+      'startDate' : formattedstartDate,
+      'createdDate' : formattedcreatedDate,
+      'updatedDate' : formatedUpdatedDate,
+      'user' : auth.currentUser?.uid ?? ''
+    }).then((_) {
+      Map<String, dynamic> document = {
+        'name': name,
+        'dosageContent': dosageContent,
+        'usedFor': usedFor,
+        'unitMorning': unitMorning,
+        'unitAfterNoon': unitAfterNoon,
+        'unitNight': unitNight,
+        'repeat' : repeat.name,
+        'startDate' : formattedstartDate,
+        'createdDate' : formattedcreatedDate,
+        'updatedDate' : formatedUpdatedDate,
+        'user' : auth.currentUser?.uid ?? ''
+      };
+      Utility().fetchUserMedicineData();
+    });
+  }
 }

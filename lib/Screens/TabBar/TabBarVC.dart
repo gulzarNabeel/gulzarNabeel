@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ffi';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:diabetes/Models/Medicine.dart';
 import 'package:diabetes/Screens/TabBar/DevicesVC.dart';
 import 'package:diabetes/Screens/Profile/ProfileVC.dart';
 import 'package:diabetes/Screens/TabBar/HealthProfileVC.dart';
@@ -131,7 +132,7 @@ class _TabBarVCState extends State<TabBarVC>
                                   CupertinoPageRoute(
                                       builder: (context) => AddMedicineVC(onClose: () {if (FirebaseAuth.instance.currentUser == null) {
                                         widget.onClose();
-                                      }})),
+                                      }}, medicineIn: Medicine('','', '', '', '', '', '', PeriodRepeat.None, DateTime.now(), DateTime.now(), DateTime.now()))),
                                 );
                               }
                           },

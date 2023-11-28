@@ -241,7 +241,7 @@ class Utility {
     users.where('user',isEqualTo: auth.currentUser?.uid ?? '').get().then((documentSnapshot) {
       if (documentSnapshot.size > 0) {
         for(int i = 0; i < documentSnapshot.size; i++) {
-          Map<String, dynamic> data = documentSnapshot.docs[i] as Map<String, dynamic>;
+          Map<String, dynamic> data = documentSnapshot.docs[i].data() as Map<String, dynamic>;
           usersMedicines.add(Medicine(documentSnapshot.docs[i].id,
               data['name'] ?? '',
               data['dosageContent'] ?? '',

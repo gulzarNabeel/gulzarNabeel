@@ -25,8 +25,8 @@ import 'dart:io';
 
 class AddMedicineVC extends StatefulWidget {
   final VoidCallback onClose;
-
-  const AddMedicineVC({super.key, required this.onClose});
+  var medicineIn = Medicine('','', '', '', '', '', '', PeriodRepeat.None, DateTime.now(), DateTime.now(), DateTime.now());
+  AddMedicineVC({super.key, required this.onClose, required this.medicineIn});
 
   @override
   State<AddMedicineVC> createState() => _AddMedicineVCState();
@@ -43,10 +43,16 @@ class _AddMedicineVCState extends State<AddMedicineVC> {
   TextEditingController dateController = TextEditingController();
   TextEditingController usedforController = TextEditingController();
   TextEditingController contentsController = TextEditingController();
-  var medicineIn = Medicine('','', '', '', '', '', '', PeriodRepeat.None, DateTime.now(), DateTime.now(), DateTime.now());
 
   @override
   void initState() {
+    textFieldName.editController.text = widget.medicineIn.name;
+    contentsController.text = widget.medicineIn.dosageContent;
+    usedforController.text = widget.medicineIn.usedFor;
+    textFieldMorning.editController.text = widget.medicineIn.unitMorning;
+    textFieldAfterNoon.editController.text = widget.medicineIn.unitAfterNoon;
+    textFieldNight.editController.text = widget.medicineIn.unitNight;
+    dateController.text = DateFormat('dd-MMM-yyyy').format(widget.medicineIn.startDate);
     textFieldUsedFor = TextField(
       maxLines: null,
       maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
@@ -108,15 +114,15 @@ class _AddMedicineVCState extends State<AddMedicineVC> {
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(
                         context: context,
-                        initialDate: medicineIn.startDate ?? DateTime.now(),
+                        initialDate: widget.medicineIn.startDate ?? DateTime.now(),
                         firstDate: Utility().getUserData().dateOfBirth ??
                             DateTime(1970),
                         lastDate: DateTime.now());
 
                     if (pickedDate != null) {
-                      medicineIn.startDate = pickedDate;
+                      widget.medicineIn.startDate = pickedDate;
                       dateController.text =
-                          DateFormat('dd-MMM-yyyy').format(medicineIn.startDate);
+                          DateFormat('dd-MMM-yyyy').format(widget.medicineIn.startDate);
                     }
                   },
                 ))
@@ -156,7 +162,7 @@ class _AddMedicineVCState extends State<AddMedicineVC> {
                                   const EdgeInsets.only(left: 10, right: 10),
                               child: DropdownButtonHideUnderline(
                                   child: DropdownButton(
-                                value: medicineIn.repeat.toString(),
+                                value: widget.medicineIn.repeat.toString(),
                                 icon: const Icon(Icons.keyboard_arrow_down),
                                 isExpanded: true,
                                 items:
@@ -168,7 +174,7 @@ class _AddMedicineVCState extends State<AddMedicineVC> {
                                 }).toList(),
                                 hint: Text('Repeat'),
                                 onChanged: (value) {
-                                  medicineIn.repeat = PeriodRepeat.values.firstWhere(
+                                  widget.medicineIn.repeat = PeriodRepeat.values.firstWhere(
                                       (element) => element.toString() == value);
                                   setState(() {
                                     initState();
@@ -192,7 +198,7 @@ class _AddMedicineVCState extends State<AddMedicineVC> {
                     onPressed: () {
                       updatedataIn();
                     },
-                    child: const Text('Add',
+                    child: Text(widget.medicineIn.id.length > 0 ? 'Update' : 'Add',
                         style: TextStyle(color: Colors.white, fontSize: 20)),
                   ),
                 ))
@@ -203,24 +209,26 @@ class _AddMedicineVCState extends State<AddMedicineVC> {
   }
 
   updatedataIn() {
-    medicineIn.name = textFieldName.editController.text;
-    medicineIn.usedFor = textFieldUsedFor.controller?.text ?? '';
-    medicineIn.dosageContent = textFieldContent.controller?.text ?? '';
-    medicineIn.unitMorning = textFieldMorning.editController.text;
-    medicineIn.unitAfterNoon = textFieldAfterNoon.editController.text;
-    medicineIn.unitNight = textFieldNight.editController.text;
-    if (medicineIn.id.length > 0) {
-
+    widget.medicineIn.name = textFieldName.editController.text;
+    widget.medicineIn.usedFor = textFieldUsedFor.controller?.text ?? '';
+    widget.medicineIn.dosageContent = textFieldContent.controller?.text ?? '';
+    widget.medicineIn.unitMorning = textFieldMorning.editController.text;
+    widget.medicineIn.unitAfterNoon = textFieldAfterNoon.editController.text;
+    widget.medicineIn.unitNight = textFieldNight.editController.text;
+    if (widget.medicineIn.id.length > 0) {
+        widget.medicineIn.updatedDate = DateTime.now();
+        widget.medicineIn.updateData();
     }else{
-      medicineIn.addData();
-      Timer.periodic(const Duration(seconds: 1), (timer) async {
-        timer.cancel();
-        Utility().fetchUserMedicineData();
-        Timer.periodic(const Duration(seconds: 1), (timer2) async {
-          timer2.cancel();
-          Navigator.pop(context);
-        });
-      });
+      widget.medicineIn.createdDate = DateTime.now();
+      widget.medicineIn.addData();
     }
+    Timer.periodic(const Duration(seconds: 1), (timer) async {
+      timer.cancel();
+      Timer.periodic(const Duration(seconds: 1), (timer2) async {
+        timer2.cancel();
+        widget.onClose();
+        Navigator.pop(context);
+      });
+    });
   }
 }
