@@ -118,22 +118,16 @@ class _TabBarVCState extends State<TabBarVC>
               ),
             ),
             title: Text(titleText, textAlign: TextAlign.center),
-            actions: (_routeTo == 4 || _routeTo == 2)
+            actions: (_routeTo == 4 || _routeTo == 2 || _routeTo == 1)
                 ? []
-                : (_routeTo == 1 || _routeTo == 3)
+                : (_routeTo == 3)
                     ? [
                         IconButton(
                           icon: const Icon(Icons.add),
                           tooltip: 'Add',
                           onPressed: () async {
                               if (_routeTo == 1) {
-                                Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                      builder: (context) => AddMedicineVC(onClose: () {if (FirebaseAuth.instance.currentUser == null) {
-                                        widget.onClose();
-                                      }}, medicineIn: Medicine('','', '', '', '', '', '', PeriodRepeat.None, DateTime.now(), DateTime.now(), DateTime.now()))),
-                                );
+
                               }
                           },
                         )

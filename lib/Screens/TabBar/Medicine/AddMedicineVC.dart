@@ -176,6 +176,12 @@ class _AddMedicineVCState extends State<AddMedicineVC> {
                                 onChanged: (value) {
                                   widget.medicineIn.repeat = PeriodRepeat.values.firstWhere(
                                       (element) => element.toString() == value);
+                                  widget.medicineIn.name = textFieldName.editController.text;
+                                  widget.medicineIn.usedFor = textFieldUsedFor.controller?.text ?? '';
+                                  widget.medicineIn.dosageContent = textFieldContent.controller?.text ?? '';
+                                  widget.medicineIn.unitMorning = textFieldMorning.editController.text;
+                                  widget.medicineIn.unitAfterNoon = textFieldAfterNoon.editController.text;
+                                  widget.medicineIn.unitNight = textFieldNight.editController.text;
                                   setState(() {
                                     initState();
                                   });
@@ -209,6 +215,7 @@ class _AddMedicineVCState extends State<AddMedicineVC> {
   }
 
   updatedataIn() {
+    ProgressIndicatorLocal().showAlert(context);
     widget.medicineIn.name = textFieldName.editController.text;
     widget.medicineIn.usedFor = textFieldUsedFor.controller?.text ?? '';
     widget.medicineIn.dosageContent = textFieldContent.controller?.text ?? '';
@@ -222,13 +229,11 @@ class _AddMedicineVCState extends State<AddMedicineVC> {
       widget.medicineIn.createdDate = DateTime.now();
       widget.medicineIn.addData();
     }
-    Timer.periodic(const Duration(seconds: 1), (timer) async {
+    Timer.periodic(const Duration(seconds: 3), (timer) async {
       timer.cancel();
-      Timer.periodic(const Duration(seconds: 1), (timer2) async {
-        timer2.cancel();
         widget.onClose();
+      ProgressIndicatorLocal().hideAlert(context);
         Navigator.pop(context);
       });
-    });
   }
 }

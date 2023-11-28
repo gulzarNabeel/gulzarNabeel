@@ -45,19 +45,6 @@ class Medicine {
       'updatedDate' : formatedUpdatedDate,
       'user' : auth.currentUser?.uid ?? ''
     }).then((_) {
-      Map<String, dynamic> document = {
-        'name': name,
-        'dosageContent': dosageContent,
-        'usedFor': usedFor,
-        'unitMorning': unitMorning,
-        'unitAfterNoon': unitAfterNoon,
-        'unitNight': unitNight,
-        'repeat' : repeat.name,
-        'startDate' : formattedstartDate,
-        'createdDate' : formattedcreatedDate,
-        'updatedDate' : formatedUpdatedDate,
-        'user' : auth.currentUser?.uid ?? ''
-      };
       Utility().fetchUserMedicineData();
     });
   }
@@ -82,19 +69,6 @@ class Medicine {
       'updatedDate' : formatedUpdatedDate,
       'user' : auth.currentUser?.uid ?? ''
     }).then((_) {
-      Map<String, dynamic> document = {
-        'name': name,
-        'dosageContent': dosageContent,
-        'usedFor': usedFor,
-        'unitMorning': unitMorning,
-        'unitAfterNoon': unitAfterNoon,
-        'unitNight': unitNight,
-        'repeat' : repeat.name,
-        'startDate' : formattedstartDate,
-        'createdDate' : formattedcreatedDate,
-        'updatedDate' : formatedUpdatedDate,
-        'user' : auth.currentUser?.uid ?? ''
-      };
       Utility().fetchUserMedicineData();
     });
   }
