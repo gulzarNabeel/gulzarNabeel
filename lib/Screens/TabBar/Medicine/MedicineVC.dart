@@ -60,7 +60,7 @@ class _MedicineVCState extends State<MedicineVC> {
               Row(
                 children: <Widget>[
                   Text('     '),
-                  Text('Dosage: ' + Utility().usersMedicines[index].unitMorning + '-' + Utility().usersMedicines[index].unitAfterNoon + '-' + Utility().usersMedicines[index].unitNight)
+                  Text('Dosage: ' + (Utility().usersMedicines[index].unitMorning.length > 0 ? Utility().usersMedicines[index].unitMorning : '0') + '-${Utility().usersMedicines[index].unitAfterNoon.length > 0 ? Utility().usersMedicines[index].unitAfterNoon : '0'}-${Utility().usersMedicines[index].unitNight.length > 0 ? Utility().usersMedicines[index].unitNight : '0'}')
                 ],
               ),
               Row(
