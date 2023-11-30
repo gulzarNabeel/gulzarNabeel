@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ffi';
+import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:diabetes/Models/Medicine.dart';
 import 'package:diabetes/Screens/TabBar/DevicesVC.dart';
@@ -9,12 +9,14 @@ import 'package:diabetes/Screens/TabBar/Medicine/AddMedicineVC.dart';
 import 'package:diabetes/Screens/TabBar/Medicine/MedicineVC.dart';
 import 'package:diabetes/Screens/TabBar/HomeVC.dart';
 import 'package:diabetes/Screens/TabBar/AccountVC.dart';
+import 'package:diabetes/Usables/AlertDialogLocal.dart';
 import 'package:diabetes/Usables/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 class TabBarVC extends StatefulWidget {
   final VoidCallback onClose;
@@ -130,12 +132,43 @@ class _TabBarVCState extends State<TabBarVC>
                                 Navigator.push(
                                   context,
                                   CupertinoPageRoute(
-                                      builder: (context) => AddMedicineVC(onClose: () {
-                                        MedicineVC vc = itemsIn[1].obj;
-                                        vc.initIn();
-                                      }, medicineIn: Medicine('','', '', '', '', '', '', PeriodRepeat.None, DateTime.now(), DateTime.now(), DateTime.now()))),
-                                );
+                                    builder: (context) => AddMedicineVC(
+                                        onClose: () {
+                                          MedicineVC vc = itemsIn[1].obj;
+                                          vc.initIn();
+                                        },
+                                        medicineIn: Medicine(
+                                            '',
+                                            '',
+                                            '',
+                                            '',
+                                            '',
+                                            '',
+                                            '',
+                                            PeriodRepeat.None,
+                                            DateTime.now(),
+                                            DateTime.now(),
+                                            DateTime.now()))),
+                              );
+                            } else if (_routeTo == 3) {
+                              var availability =
+                                  await FlutterNfcKit.nfcAvailability;
+                              if (availability != NFCAvailability.available) {
+                                AlertDialogLocal(
+                                        'Not Available',
+                                        'NFC Scanning not available in this device',
+                                        'OK',
+                                        '',
+                                        () {},
+                                        () {},
+                                        false,
+                                        '',
+                                        false)
+                                    .showAlert(context);
+                                return;
                               }
+                              readDataAndroid();
+                            }
                           },
                         )
                       ]
@@ -190,5 +223,54 @@ class _TabBarVCState extends State<TabBarVC>
           ),
           body: itemsIn[_routeTo].obj as Widget,
         ));
+  }
+
+
+  readDataAndroid() async {
+    var tag = await FlutterNfcKit.poll(timeout: Duration(seconds: 10),
+        iosMultipleTagMessage: "Multiple tags found!", iosAlertMessage: "Scan your tag");
+
+    print(jsonEncode(tag));
+    if (tag.type == NFCTagType.iso7816) {
+      var result = await FlutterNfcKit.transceive("00B0950000", timeout: Duration(seconds: 5)); // timeout is still Android-only, persist until next change
+      print(result);
+    }
+// iOS only: set alert message on-the-fly
+// this will persist until finish()
+    await FlutterNfcKit.setIosAlertMessage("hi there!");
+
+// read NDEF records if available
+    if (tag.ndefAvailable == true) {
+      /// decoded NDEF records (see [ndef.NDEFRecord] for details)
+      /// `UriRecord: id=(empty) typeNameFormat=TypeNameFormat.nfcWellKnown type=U uri=https://github.com/nfcim/ndef`
+      for (var record in await FlutterNfcKit.readNDEFRecords(cached: false)) {
+        print(record.toString());
+      }
+      /// raw NDEF records (data in hex string)
+      /// `{identifier: "", payload: "00010203", type: "0001", typeNameFormat: "nfcWellKnown"}`
+      for (var record in await FlutterNfcKit.readNDEFRawRecords(cached: false)) {
+        print(jsonEncode(record).toString());
+      }
+    }
+
+// read / write block / page / sector level data
+// see documentation for platform-specific supportability
+    if (tag.type == NFCTagType.iso15693) {
+      await FlutterNfcKit.writeBlock(
+          1, // index
+          [0xde, 0xad, 0xbe, 0xff], // data
+          iso15693ExtendedMode: false // use extended mode for ISO 15693
+      ).then((value) {
+        // print(value.toString());
+      });
+    }
+
+
+// Call finish() only once
+    await FlutterNfcKit.finish();
+// iOS only: show alert/error message on finish
+    await FlutterNfcKit.finish(iosAlertMessage: "Success");
+// or
+    await FlutterNfcKit.finish(iosErrorMessage: "Failed");
   }
 }

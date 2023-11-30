@@ -824,6 +824,8 @@ PODS:
   - flutter_inappwebview/Core (0.0.1):
     - Flutter
     - OrderedSet (~> 5.0)
+  - flutter_nfc_kit (2.0.0):
+    - Flutter
   - flutter_sim_country_code (0.0.1):
     - Flutter
   - FMDB (2.7.5):
@@ -945,8 +947,6 @@ PODS:
     - nanopb/encode (= 2.30909.0)
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
-  - nfc_manager (0.0.1):
-    - Flutter
   - OrderedSet (5.0.0)
   - path_provider_foundation (0.0.1):
     - Flutter
@@ -979,10 +979,10 @@ DEPENDENCIES:
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
+  - flutter_nfc_kit (from `.symlinks/plugins/flutter_nfc_kit/ios`)
   - flutter_sim_country_code (from `.symlinks/plugins/flutter_sim_country_code/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
-  - nfc_manager (from `.symlinks/plugins/nfc_manager/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
@@ -1053,14 +1053,14 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_inappwebview:
     :path: ".symlinks/plugins/flutter_inappwebview/ios"
+  flutter_nfc_kit:
+    :path: ".symlinks/plugins/flutter_nfc_kit/ios"
   flutter_sim_country_code:
     :path: ".symlinks/plugins/flutter_sim_country_code/ios"
   image_cropper:
     :path: ".symlinks/plugins/image_cropper/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
-  nfc_manager:
-    :path: ".symlinks/plugins/nfc_manager/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   shared_preferences_foundation:
@@ -1105,6 +1105,7 @@ SPEC CHECKSUMS:
   FirebaseStorage: d664834746c0274d267072c6bfa100960f90654a
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_inappwebview: 3d32228f1304635e7c028b0d4252937730bbc6cf
+  flutter_nfc_kit: 965c98c3fa68f5609f1cc89abb968fe1b8ffdbaa
   flutter_sim_country_code: 364e91e71f067cdec1dd1228eb4d1f13ab1a54e5
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleAppMeasurement: 079d7632810e9d9704a99932547ba1554acc4342
@@ -1117,7 +1118,6 @@ SPEC CHECKSUMS:
   image_picker_ios: 4a8aadfbb6dc30ad5141a2ce3832af9214a705b5
   leveldb-library: f03246171cce0484482ec291f88b6d563699ee06
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
-  nfc_manager: d7da7cb781f7744b94df5fe9dbca904ac4a0939e
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4

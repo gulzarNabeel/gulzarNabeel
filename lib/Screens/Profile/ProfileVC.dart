@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_calling_code_picker/picker.dart';
 import 'package:diabetes/Models/HealthProfile.dart';
 import 'package:diabetes/Models/UserLocal.dart';
